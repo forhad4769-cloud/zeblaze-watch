@@ -466,8 +466,8 @@
             >
               <div>
                 <div class="flex items-center justify-between gap-3">
-                  <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
-                    <svg class="h-4 w-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <div class="flex min-w-0 items-center gap-2 text-xs font-medium text-slate-400">
+                    <svg class="h-4 w-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <rect width="16" height="16" x="4" y="4" rx="2" />
                       <rect width="6" height="6" x="9" y="9" rx="1" />
                       <path d="M15 2v2" />
@@ -479,15 +479,15 @@
                       <path d="M9 2v2" />
                       <path d="M9 20v2" />
                     </svg>
-                    <span>Device Information</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="font-mono text-slate-500">0x180A</span>
+                    <span class="whitespace-nowrap">Device Information</span>
+                    <span aria-hidden="true" class="hidden sm:inline">·</span>
+                    <span class="hidden truncate font-mono text-slate-500 sm:inline">0x2A00 · 0xFEC9</span>
                   </div>
 
                   <button
                     type="button"
                     id="device-info-inspect-btn"
-                    class="hidden whitespace-nowrap text-xs font-medium text-sky-400 transition-colors hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                    class="hidden shrink-0 whitespace-nowrap text-xs font-medium text-sky-400 transition-colors hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                   >
                     Inspect GATT
                   </button>
@@ -497,7 +497,73 @@
               </div>
 
               <div id="device-info-footer" class="mt-4 border-t border-slate-800/80 pt-3.5 text-xs text-slate-400">
-                Reads Manufacturer, Model, and Firmware Revision from 0x180A.
+                Reads Device Name (0x2A00), Hardware MAC (0xFEC9), and 0x180A fields on connect.
+              </div>
+            </article>
+          </div>
+
+          <!-- Live Watch Stream (0xFEA1) Card -->
+          <div class="lg:col-span-12">
+            <article
+              aria-label="Live Watch Stream (0xFEA1)"
+              class="flex flex-col justify-between rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:p-6"
+            >
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="space-y-1">
+                  <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400">
+                    <svg class="h-4 w-4 shrink-0 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+                      <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+                      <circle cx="12" cy="12" r="2" />
+                      <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+                      <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
+                    </svg>
+                    <h2 class="text-sm font-semibold text-slate-100">Live Watch Stream (0xFEA1)</h2>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono text-slate-500">0000fea1</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                    <span
+                      id="fea1-stream-dot"
+                      aria-hidden="true"
+                      class="h-2 w-2 shrink-0 rounded-full bg-slate-600"
+                    ></span>
+                    <span
+                      id="fea1-stream-status"
+                      data-testid="fea1-stream-status"
+                      class="font-mono text-slate-400"
+                    >
+                      Standby · Connect watch to subscribe
+                    </span>
+                    <span
+                      id="fea1-packet-count"
+                      class="hidden font-mono text-xs tabular-nums text-slate-500"
+                    ></span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    id="fea1-clear-log-btn"
+                    data-testid="fea1-clear-log-btn"
+                    disabled
+                    class="inline-flex min-h-[38px] items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-800 bg-[#080C15] px-3.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-slate-700 hover:text-slate-100 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                    <span>Clear Log</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="fea1-stream-container" data-testid="fea1-stream-log" class="mt-4"></div>
+
+              <div id="fea1-stream-footer" class="mt-4 border-t border-slate-800/80 pt-3.5 text-xs text-slate-400">
+                Automatically calls startNotifications() on FitCloudPro Sync TX (0xFEA1) upon connection.
               </div>
             </article>
           </div>
@@ -692,6 +758,8 @@
           BODY_SENSOR_LOCATION: '00002a38-0000-1000-8000-00805f9b34fb',
           HEART_RATE_CONTROL_POINT: '00002a39-0000-1000-8000-00805f9b34fb',
           VENDOR_FEE7: FITCLOUDPRO_VENDOR_SERVICE,
+          VENDOR_FEC9: '0000fec9-0000-1000-8000-00805f9b34fb',
+          VENDOR_FEA1: '0000fea1-0000-1000-8000-00805f9b34fb',
           VENDOR_FFD0: REALTEK_VENDOR_SERVICE,
           VENDOR_UART: FITCLOUDPRO_UART_SERVICE,
         };
@@ -725,7 +793,7 @@
           '2a2b': 'Current Time',
           fec7: 'Vendor Write Channel',
           fec8: 'Vendor Indicate Channel',
-          fec9: 'Vendor Read / MAC Info',
+          fec9: 'Hardware MAC Info',
           fea1: 'FitCloudPro Sync TX',
           fea2: 'FitCloudPro Sync RX',
           ffd1: 'Realtek Control Write',
@@ -745,8 +813,10 @@
           6: 'Foot',
         };
 
-        const DEMO_DEVICE_NAME = 'Zeblaze GTR 3 Pro (Demo)';
+        const DEMO_DEVICE_NAME = 'GTR 3 Pro (Demo)';
         const DEMO_DEVICE_INFO = {
+          deviceName: 'GTR 3 Pro',
+          macAddress: 'C1:A1:B2:2B:96:8A',
           manufacturer: 'Zeblaze (FitCloudPro)',
           model: 'Zeblaze GTR 3 Pro',
           firmwareRevision: 'v2.4.18-FitCloudPro',
@@ -755,6 +825,7 @@
         };
 
         const MAX_HR_HISTORY = 36;
+        const MAX_FEA1_STREAM_LOG = 100;
         const BATTERY_SEGMENTS = 10;
 
         // =====================================================================
@@ -861,6 +932,33 @@
           return parts.join(' ');
         }
 
+        function formatDataViewDecimals(dataView) {
+          const parts = [];
+          for (let i = 0; i < dataView.byteLength; i++) {
+            parts.push(String(dataView.getUint8(i)));
+          }
+          return parts.join(', ');
+        }
+
+        function formatMacAddress(dataView) {
+          if (!dataView || dataView.byteLength === 0) return null;
+          if (dataView.byteLength >= 12) {
+            const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, dataView.byteLength);
+            if (isLikelyPrintableAscii(bytes)) {
+              const cleaned = decodeUtf8String(dataView).replace(/[:\-\s]/g, '');
+              if (/^[0-9a-fA-F]{12}$/.test(cleaned)) {
+                return cleaned.toUpperCase().match(/.{2}/g).join(':');
+              }
+            }
+          }
+          const len = dataView.byteLength >= 6 ? 6 : dataView.byteLength;
+          const octets = [];
+          for (let i = 0; i < len; i++) {
+            octets.push(dataView.getUint8(i).toString(16).toUpperCase().padStart(2, '0'));
+          }
+          return octets.join(':');
+        }
+
         function isLikelyPrintableAscii(bytes) {
           if (!bytes.length) return false;
           let printable = 0;
@@ -876,14 +974,32 @@
         function decodeCharacteristicValue(uuid, dataView, readAt) {
           const ts = readAt || Date.now();
           const hex = formatDataViewHex(dataView);
+          const decimals = formatDataViewDecimals(dataView);
           const byteLength = dataView.byteLength;
           if (byteLength === 0) {
-            return { hex: '(empty)', decoded: 'Empty payload (0 bytes)', byteLength: 0, readAt: ts };
+            return {
+              hex: '(empty)',
+              decimals: '',
+              decoded: 'Empty payload (0 bytes)',
+              byteLength: 0,
+              readAt: ts,
+            };
+          }
+          if (matchesShortUuid(uuid, 'fec9')) {
+            const mac = formatMacAddress(dataView);
+            return {
+              hex,
+              decimals,
+              decoded: mac ? 'MAC ' + mac : byteLength + ' raw bytes',
+              byteLength,
+              readAt: ts,
+            };
           }
           if (matchesShortUuid(uuid, '2a19')) {
             const pct = parseBatteryLevel(dataView);
             return {
               hex,
+              decimals,
               decoded: pct !== null ? pct + '% Battery' : 'Invalid battery value',
               byteLength,
               readAt: ts,
@@ -891,12 +1007,13 @@
           }
           if (matchesShortUuid(uuid, '2a37') && byteLength >= 2) {
             const hr = parseHeartRateMeasurement(dataView, ts);
-            return { hex, decoded: hr.bpm + ' BPM', byteLength, readAt: ts };
+            return { hex, decimals, decoded: hr.bpm + ' BPM', byteLength, readAt: ts };
           }
           if (matchesShortUuid(uuid, '2a38')) {
             const code = dataView.getUint8(0);
             return {
               hex,
+              decimals,
               decoded: BODY_SENSOR_LOCATIONS[code] || 'Location code ' + code,
               byteLength,
               readAt: ts,
@@ -910,6 +1027,7 @@
                 : 'Appearance #' + appearance;
             return {
               hex,
+              decimals,
               decoded:
                 label + ' (0x' + appearance.toString(16).toUpperCase().padStart(4, '0') + ')',
               byteLength,
@@ -919,24 +1037,43 @@
           const utf8Codes = ['2a00', '2a24', '2a25', '2a26', '2a27', '2a28', '2a29'];
           if (utf8Codes.some((c) => matchesShortUuid(uuid, c))) {
             const text = decodeUtf8String(dataView);
-            return { hex, decoded: text ? '"' + text + '"' : '(blank string)', byteLength, readAt: ts };
+            return {
+              hex,
+              decimals,
+              decoded: text ? '"' + text + '"' : '(blank string)',
+              byteLength,
+              readAt: ts,
+            };
           }
           const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, byteLength);
           if (isLikelyPrintableAscii(bytes)) {
-            return { hex, decoded: '"' + decodeUtf8String(dataView) + '"', byteLength, readAt: ts };
+            return {
+              hex,
+              decimals,
+              decoded: '"' + decodeUtf8String(dataView) + '"',
+              byteLength,
+              readAt: ts,
+            };
           }
           if (byteLength === 1) {
-            return { hex, decoded: 'uint8: ' + dataView.getUint8(0), byteLength, readAt: ts };
+            return {
+              hex,
+              decimals,
+              decoded: 'uint8: ' + dataView.getUint8(0),
+              byteLength,
+              readAt: ts,
+            };
           }
           if (byteLength === 2) {
             return {
               hex,
+              decimals,
               decoded: 'uint16 LE: ' + dataView.getUint16(0, true),
               byteLength,
               readAt: ts,
             };
           }
-          return { hex, decoded: byteLength + ' raw bytes', byteLength, readAt: ts };
+          return { hex, decimals, decoded: byteLength + ' raw bytes', byteLength, readAt: ts };
         }
 
         function getHeartRateZone(bpm) {
@@ -999,6 +1136,15 @@
           });
         }
 
+        function formatClockWithMs(ts) {
+          const d = new Date(ts);
+          const hh = String(d.getHours()).padStart(2, '0');
+          const mm = String(d.getMinutes()).padStart(2, '0');
+          const ss = String(d.getSeconds()).padStart(2, '0');
+          const ms = String(d.getMilliseconds()).padStart(3, '0');
+          return hh + ':' + mm + ':' + ss + '.' + ms;
+        }
+
         function formatPropertyFlags(props) {
           const flags = [];
           if (props.read) flags.push('READ');
@@ -1035,6 +1181,9 @@
             lastRead: null,
             readError: null,
             isReading: false,
+            isListening: false,
+            isTogglingNotify: false,
+            notifyCount: 0,
             nativeCharacteristic: null,
           };
         }
@@ -1075,8 +1224,8 @@
               chars: [
                 makeDemoChar('0000fec7-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
                 makeDemoChar('0000fec8-0000-1000-8000-00805f9b34fb', { indicate: true }),
-                makeDemoChar('0000fec9-0000-1000-8000-00805f9b34fb', { read: true }),
-                makeDemoChar('0000fea1-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
+                makeDemoChar(GATT_UUIDS.VENDOR_FEC9, { read: true }),
+                makeDemoChar(GATT_UUIDS.VENDOR_FEA1, { notify: true, write: true, writeWithoutResponse: true }),
                 makeDemoChar('0000fea2-0000-1000-8000-00805f9b34fb', { read: true, notify: true }),
               ],
             },
@@ -1108,10 +1257,11 @@
           });
         }
 
-        function getDemoCharacteristicPayload(uuid, currentBpm, currentBattery) {
+        function getDemoCharacteristicPayload(uuid, currentBpm, currentBattery, step) {
           const key = uuid.toLowerCase();
+          const seq = (step || 0) & 0xff;
           const map = {
-            [GATT_UUIDS.DEVICE_NAME]: encodeAscii('Zeblaze GTR 3 Pro'),
+            [GATT_UUIDS.DEVICE_NAME]: encodeAscii(DEMO_DEVICE_INFO.deviceName),
             [GATT_UUIDS.APPEARANCE]: new Uint8Array([0xc1, 0x00]),
             [GATT_UUIDS.MANUFACTURER_NAME]: encodeAscii(DEMO_DEVICE_INFO.manufacturer),
             [GATT_UUIDS.MODEL_NUMBER]: encodeAscii(DEMO_DEVICE_INFO.model),
@@ -1126,11 +1276,39 @@
               0x03,
             ]),
             [GATT_UUIDS.BODY_SENSOR_LOCATION]: new Uint8Array([0x02]),
-            '0000fec9-0000-1000-8000-00805f9b34fb': new Uint8Array([0x4c, 0x93, 0x2b, 0xa1, 0x7e, 0x04]),
-            '0000fea2-0000-1000-8000-00805f9b34fb': new Uint8Array([0xab, 0x00, 0x06, 0x10, 0x24, 0x84, 0x01, 0x5c]),
+            [GATT_UUIDS.VENDOR_FEC9]: new Uint8Array([0xc1, 0xa1, 0xb2, 0x2b, 0x96, 0x8a]),
+            [GATT_UUIDS.VENDOR_FEA1]: new Uint8Array([
+              0xab,
+              0x00,
+              0x06,
+              0xff,
+              0x31,
+              0x0a,
+              Math.max(40, Math.min(200, currentBpm)),
+              Math.max(0, Math.min(100, currentBattery)),
+              seq,
+            ]),
+            '0000fea2-0000-1000-8000-00805f9b34fb': new Uint8Array([
+              0xab,
+              0x00,
+              0x06,
+              0x10,
+              0x24,
+              0x84,
+              0x01,
+              (0x5c + seq) & 0xff,
+            ]),
+            '0000fec8-0000-1000-8000-00805f9b34fb': new Uint8Array([0xfe, 0x01, 0x00, 0x08, seq]),
             '0000ffd2-0000-1000-8000-00805f9b34fb': encodeAscii('RTL8763EW-466x466'),
+            '6e400003-b5a3-f393-e0a9-e50e24dcca9e': new Uint8Array([
+              0x5a,
+              0x05,
+              seq,
+              Math.max(40, Math.min(200, currentBpm)),
+              Math.max(0, Math.min(100, currentBattery)),
+            ]),
           };
-          const bytes = map[key] || new Uint8Array([0x01, 0x00]);
+          const bytes = map[key] || new Uint8Array([0x01, seq]);
           return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
         }
 
@@ -1159,13 +1337,21 @@
           heartRateExposed: null,
           hoveredHrIndex: null,
           deviceInfo: {
+            deviceName: null,
+            macAddress: null,
             manufacturer: null,
             model: null,
             firmwareRevision: null,
             hardwareRevision: null,
             softwareRevision: null,
           },
+          genericAccessExposed: null,
+          macExposed: null,
           deviceInfoExposed: null,
+          fea1Exposed: null,
+          fea1Listening: false,
+          fea1Error: null,
+          fea1StreamLog: [],
           services: [],
           expandedServices: {},
           searchQuery: '',
@@ -1176,6 +1362,9 @@
         let bluetoothDevice = null;
         let hrCharacteristic = null;
         let batteryCharacteristic = null;
+        let fea1Characteristic = null;
+        const activeNotifyHandlers = new Map();
+        let streamPacketCounter = 0;
         let demoIntervalId = null;
         let demoStep = 20;
         let latestDemoBpm = 74;
@@ -1227,6 +1416,12 @@
           deviceInfoInspectBtn: document.getElementById('device-info-inspect-btn'),
           deviceInfoRows: document.getElementById('device-info-rows'),
           deviceInfoFooter: document.getElementById('device-info-footer'),
+          fea1StreamDot: document.getElementById('fea1-stream-dot'),
+          fea1StreamStatus: document.getElementById('fea1-stream-status'),
+          fea1PacketCount: document.getElementById('fea1-packet-count'),
+          fea1ClearLogBtn: document.getElementById('fea1-clear-log-btn'),
+          fea1StreamContainer: document.getElementById('fea1-stream-container'),
+          fea1StreamFooter: document.getElementById('fea1-stream-footer'),
           inspectorEmptyState: document.getElementById('inspector-empty-state'),
           inspectorConnectedShell: document.getElementById('inspector-connected-shell'),
           inspectorConnectBtn: document.getElementById('inspector-connect-btn'),
@@ -1247,42 +1442,184 @@
           }
         }
 
-        function onHeartRateNotification(event) {
-          const target = event.target;
-          if (!target || !target.value) return;
-          try {
-            const sample = parseHeartRateMeasurement(target.value);
-            latestDemoBpm = sample.bpm;
-            state.heartRateHistory = state.heartRateHistory.slice(-(MAX_HR_HISTORY - 1)).concat(sample);
-            renderHeartRateCard();
-          } catch (_) {
-            // Ignore malformed notification frame
+        function appendFea1Packet(dataView, timestamp) {
+          const ts = timestamp || Date.now();
+          const packet = {
+            id: ++streamPacketCounter,
+            timestamp: ts,
+            hex: formatDataViewHex(dataView) || '(empty)',
+            decimals: formatDataViewDecimals(dataView) || '—',
+            byteLength: dataView.byteLength,
+          };
+          state.fea1StreamLog = [packet].concat(state.fea1StreamLog).slice(0, MAX_FEA1_STREAM_LOG);
+        }
+
+        function handleCharacteristicNotification(charModel, dataView, timestamp) {
+          if (!charModel || !dataView) return;
+          const now = timestamp || Date.now();
+          const decoded = decodeCharacteristicValue(charModel.uuid, dataView, now);
+          decoded.source = 'notify';
+          charModel.lastRead = decoded;
+          charModel.readError = null;
+          charModel.notifyCount = (charModel.notifyCount || 0) + 1;
+
+          if (matchesShortUuid(charModel.uuid, '2a37')) {
+            try {
+              const sample = parseHeartRateMeasurement(dataView, now);
+              latestDemoBpm = sample.bpm;
+              state.heartRateHistory = state.heartRateHistory
+                .slice(-(MAX_HR_HISTORY - 1))
+                .concat(sample);
+              if (state.activeTab === 'dashboard') {
+                renderHeartRateCard();
+              }
+            } catch (_) {
+              // Ignore malformed HR frame
+            }
+          }
+
+          if (matchesShortUuid(charModel.uuid, '2a19')) {
+            const pct = parseBatteryLevel(dataView);
+            if (pct !== null) {
+              latestDemoBattery = pct;
+              state.batteryLevel = pct;
+              state.batteryLastUpdated = now;
+              if (state.activeTab === 'dashboard') {
+                renderBatteryCard();
+              }
+            }
+          }
+
+          if (matchesShortUuid(charModel.uuid, 'fea1')) {
+            appendFea1Packet(dataView, now);
+            if (state.activeTab === 'dashboard') {
+              renderFea1StreamCard();
+            }
+          }
+
+          if (state.activeTab === 'inspector') {
+            renderInspectorServicesList();
           }
         }
 
-        function onBatteryNotification(event) {
-          const target = event.target;
-          if (!target || !target.value) return;
-          const pct = parseBatteryLevel(target.value);
-          if (pct !== null) {
-            latestDemoBattery = pct;
-            state.batteryLevel = pct;
-            state.batteryLastUpdated = Date.now();
-            renderBatteryCard();
+        async function startCharacteristicNotifications(charModel) {
+          if (!charModel) return false;
+          const key = charModel.uuid.toLowerCase();
+
+          if (state.isDemoMode) {
+            charModel.isListening = true;
+            charModel.readError = null;
+            if (matchesShortUuid(charModel.uuid, 'fea1')) {
+              state.fea1Listening = true;
+              state.fea1Error = null;
+            }
+            const sampleView = getDemoCharacteristicPayload(
+              charModel.uuid,
+              latestDemoBpm,
+              latestDemoBattery,
+              demoStep
+            );
+            handleCharacteristicNotification(charModel, sampleView);
+            return true;
+          }
+
+          if (!charModel.nativeCharacteristic) {
+            throw new Error('Characteristic handle unavailable. Reconnect watch and try again.');
+          }
+
+          if (activeNotifyHandlers.has(key)) {
+            charModel.isListening = true;
+            if (matchesShortUuid(charModel.uuid, 'fea1')) {
+              state.fea1Listening = true;
+            }
+            return true;
+          }
+
+          const nativeChar = charModel.nativeCharacteristic;
+          const listener = function (event) {
+            const target = event.target;
+            if (!target || !target.value) return;
+            handleCharacteristicNotification(charModel, target.value, Date.now());
+          };
+
+          await nativeChar.startNotifications();
+          nativeChar.addEventListener('characteristicvaluechanged', listener);
+          activeNotifyHandlers.set(key, { nativeChar, listener, charModel });
+          charModel.isListening = true;
+          charModel.readError = null;
+          if (matchesShortUuid(charModel.uuid, 'fea1')) {
+            state.fea1Listening = true;
+            state.fea1Error = null;
+          }
+          return true;
+        }
+
+        async function stopCharacteristicNotifications(charModel) {
+          if (!charModel) return;
+          const key = charModel.uuid.toLowerCase();
+
+          if (!state.isDemoMode) {
+            const entry = activeNotifyHandlers.get(key);
+            if (entry) {
+              entry.nativeChar.removeEventListener('characteristicvaluechanged', entry.listener);
+              try {
+                await entry.nativeChar.stopNotifications();
+              } catch (_) {}
+              activeNotifyHandlers.delete(key);
+            }
+          }
+
+          charModel.isListening = false;
+          if (matchesShortUuid(charModel.uuid, 'fea1')) {
+            state.fea1Listening = false;
+          }
+        }
+
+        async function toggleCharacteristicNotify(serviceUuid, charUuid) {
+          const service = state.services.find((s) => s.uuid === serviceUuid);
+          const ch = service && service.characteristics.find((c) => c.uuid === charUuid);
+          if (!ch) return;
+
+          ch.isTogglingNotify = true;
+          ch.readError = null;
+          renderInspectorServicesList();
+
+          try {
+            if (ch.isListening) {
+              await stopCharacteristicNotifications(ch);
+            } else {
+              await startCharacteristicNotifications(ch);
+            }
+          } catch (err) {
+            ch.isListening = false;
+            ch.readError = (err && err.message) || 'Notifications rejected by peripheral.';
+            if (matchesShortUuid(ch.uuid, 'fea1')) {
+              state.fea1Listening = false;
+              state.fea1Error = ch.readError;
+            }
+          } finally {
+            ch.isTogglingNotify = false;
+            renderInspectorServicesList();
+            if (matchesShortUuid(ch.uuid, 'fea1') && state.activeTab === 'dashboard') {
+              renderFea1StreamCard();
+            }
           }
         }
 
         function cleanupHardwareConnection() {
-          if (hrCharacteristic) {
-            hrCharacteristic.removeEventListener('characteristicvaluechanged', onHeartRateNotification);
-            hrCharacteristic.stopNotifications().catch(() => {});
-            hrCharacteristic = null;
-          }
-          if (batteryCharacteristic) {
-            batteryCharacteristic.removeEventListener('characteristicvaluechanged', onBatteryNotification);
-            batteryCharacteristic.stopNotifications().catch(() => {});
-            batteryCharacteristic = null;
-          }
+          activeNotifyHandlers.forEach(function (entry) {
+            try {
+              entry.nativeChar.removeEventListener('characteristicvaluechanged', entry.listener);
+              entry.nativeChar.stopNotifications().catch(() => {});
+            } catch (_) {}
+            if (entry.charModel) {
+              entry.charModel.isListening = false;
+            }
+          });
+          activeNotifyHandlers.clear();
+          hrCharacteristic = null;
+          batteryCharacteristic = null;
+          fea1Characteristic = null;
           if (bluetoothDevice) {
             if (bluetoothDevice.gatt && bluetoothDevice.gatt.connected) {
               bluetoothDevice.gatt.disconnect();
@@ -1301,13 +1638,21 @@
           state.heartRateExposed = null;
           state.hoveredHrIndex = null;
           state.deviceInfo = {
+            deviceName: null,
+            macAddress: null,
             manufacturer: null,
             model: null,
             firmwareRevision: null,
             hardwareRevision: null,
             softwareRevision: null,
           };
+          state.genericAccessExposed = null;
+          state.macExposed = null;
           state.deviceInfoExposed = null;
+          state.fea1Exposed = null;
+          state.fea1Listening = false;
+          state.fea1Error = null;
+          state.fea1StreamLog = [];
           state.services = [];
           state.expandedServices = {};
         }
@@ -1357,33 +1702,117 @@
           state.batteryLastUpdated = Date.now();
           state.batteryExposed = true;
           state.deviceInfo = Object.assign({}, DEMO_DEVICE_INFO);
+          state.genericAccessExposed = true;
+          state.macExposed = true;
           state.deviceInfoExposed = true;
+          state.fea1Exposed = true;
+          state.fea1Listening = true;
+          state.fea1Error = null;
+          state.fea1StreamLog = [];
           state.services = createDemoGattServices();
           state.expandedServices = {};
+
+          // Mark auto-subscribed demo characteristics as actively listening
+          const now = Date.now();
+          state.services.forEach(function (svc) {
+            svc.characteristics.forEach(function (ch) {
+              if (
+                matchesShortUuid(ch.uuid, 'fea1') ||
+                matchesShortUuid(ch.uuid, '2a37') ||
+                matchesShortUuid(ch.uuid, '2a19')
+              ) {
+                ch.isListening = true;
+                const dv = getDemoCharacteristicPayload(
+                  ch.uuid,
+                  latestDemoBpm,
+                  latestDemoBattery,
+                  demoStep
+                );
+                const decoded = decodeCharacteristicValue(ch.uuid, dv, now);
+                decoded.source = 'notify';
+                ch.lastRead = decoded;
+                ch.notifyCount = 1;
+              }
+            });
+          });
+
+          // Seed two realistic FitCloudPro 0xFEA1 packets on demo connect
+          appendFea1Packet(
+            getDemoCharacteristicPayload(GATT_UUIDS.VENDOR_FEA1, latestDemoBpm - 1, latestDemoBattery, demoStep - 1),
+            now - 1800
+          );
+          appendFea1Packet(
+            getDemoCharacteristicPayload(GATT_UUIDS.VENDOR_FEA1, latestDemoBpm, latestDemoBattery, demoStep),
+            now
+          );
 
           renderAll();
 
           demoIntervalId = window.setInterval(function () {
             demoStep += 1;
             latestDemoBpm = generateDemoHeartRateBpm(latestDemoBpm, demoStep);
-            const nextSample = {
-              bpm: latestDemoBpm,
-              timestamp: Date.now(),
-              sensorContact: 'supported-detected',
-              rrIntervalsMs: [Math.round(60000 / latestDemoBpm)],
-            };
-            state.heartRateHistory = state.heartRateHistory.slice(-(MAX_HR_HISTORY - 1)).concat(nextSample);
-            if (state.activeTab === 'dashboard') {
-              renderHeartRateCard();
-            }
+            const tickNow = Date.now();
 
             if (demoStep % 38 === 0 && latestDemoBattery > 18) {
               latestDemoBattery -= 1;
               state.batteryLevel = latestDemoBattery;
-              state.batteryLastUpdated = Date.now();
+              state.batteryLastUpdated = tickNow;
               if (state.activeTab === 'dashboard') {
                 renderBatteryCard();
               }
+            }
+
+            let inspectorDirty = false;
+            state.services.forEach(function (svc) {
+              svc.characteristics.forEach(function (ch) {
+                if (!ch.isListening) return;
+
+                if (matchesShortUuid(ch.uuid, '2a37')) {
+                  const hrView = getDemoCharacteristicPayload(
+                    ch.uuid,
+                    latestDemoBpm,
+                    latestDemoBattery,
+                    demoStep
+                  );
+                  handleCharacteristicNotification(ch, hrView, tickNow);
+                  inspectorDirty = true;
+                } else if (matchesShortUuid(ch.uuid, 'fea1')) {
+                  if (demoStep % 2 === 0) {
+                    const fea1View = getDemoCharacteristicPayload(
+                      ch.uuid,
+                      latestDemoBpm,
+                      latestDemoBattery,
+                      demoStep
+                    );
+                    handleCharacteristicNotification(ch, fea1View, tickNow);
+                    inspectorDirty = true;
+                  }
+                } else if (matchesShortUuid(ch.uuid, '2a19')) {
+                  if (demoStep % 38 === 0) {
+                    const battView = getDemoCharacteristicPayload(
+                      ch.uuid,
+                      latestDemoBpm,
+                      latestDemoBattery,
+                      demoStep
+                    );
+                    handleCharacteristicNotification(ch, battView, tickNow);
+                    inspectorDirty = true;
+                  }
+                } else {
+                  const view = getDemoCharacteristicPayload(
+                    ch.uuid,
+                    latestDemoBpm,
+                    latestDemoBattery,
+                    demoStep
+                  );
+                  handleCharacteristicNotification(ch, view, tickNow);
+                  inspectorDirty = true;
+                }
+              });
+            });
+
+            if (inspectorDirty && state.activeTab === 'inspector') {
+              renderInspectorServicesList();
             }
           }, 1200);
         }
@@ -1414,18 +1843,19 @@
 
           try {
             const device = await navigator.bluetooth.requestDevice({
-              acceptAllDevices: true,
+              filters: [{ name: 'GTR 3 Pro' }, { namePrefix: 'GTR' }],
               optionalServices: OPTIONAL_BLUETOOTH_SERVICES,
             });
 
             bluetoothDevice = device;
-            state.deviceName = device.name || 'Unnamed Bluetooth Watch';
+            state.deviceName = device.name || 'GTR 3 Pro';
 
             device.addEventListener(
               'gattserverdisconnected',
               function () {
                 cleanupHardwareConnection();
                 state.status = 'disconnected';
+                state.fea1Listening = false;
                 state.error = {
                   title: 'Watch disconnected',
                   message:
@@ -1456,8 +1886,14 @@
             const discovered = [];
             let foundBattery = false;
             let foundHeartRate = false;
+            let foundGenericAccess = false;
+            let foundMac = false;
             let foundDeviceInfo = false;
+            let foundFea1 = false;
+            let fea1ErrorMsg = null;
             const nextInfo = {
+              deviceName: null,
+              macAddress: null,
               manufacturer: null,
               model: null,
               firmwareRevision: null,
@@ -1492,6 +1928,9 @@
                   lastRead: null,
                   readError: null,
                   isReading: false,
+                  isListening: false,
+                  isTogglingNotify: false,
+                  notifyCount: 0,
                   nativeCharacteristic: ch,
                 };
               });
@@ -1504,27 +1943,75 @@
                 characteristics: mappedChars,
               });
 
+              // Generic Access Service (0x1800 -> Device Name 0x2A00)
+              if (matchesShortUuid(svc.uuid, '1800')) {
+                foundGenericAccess = true;
+                const nameCharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, '2a00'));
+                if (nameCharModel && nameCharModel.properties.read) {
+                  try {
+                    const val = await nameCharModel.nativeCharacteristic.readValue();
+                    const text = decodeUtf8String(val);
+                    if (text.length) {
+                      nextInfo.deviceName = text;
+                      state.deviceName = text;
+                      nameCharModel.lastRead = decodeCharacteristicValue(nameCharModel.uuid, val);
+                    }
+                  } catch (_) {}
+                }
+              }
+
+              // FitCloudPro Vendor Service (0xFEE7 -> Hardware MAC 0xFEC9 & Sync TX 0xFEA1)
+              if (matchesShortUuid(svc.uuid, 'fee7')) {
+                const macCharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, 'fec9'));
+                if (macCharModel) {
+                  foundMac = true;
+                  if (macCharModel.properties.read) {
+                    try {
+                      const val = await macCharModel.nativeCharacteristic.readValue();
+                      const formattedMac = formatMacAddress(val);
+                      if (formattedMac) {
+                        nextInfo.macAddress = formattedMac;
+                        macCharModel.lastRead = decodeCharacteristicValue(macCharModel.uuid, val);
+                      }
+                    } catch (_) {}
+                  }
+                }
+              }
+
+              // Auto-subscribe to FitCloudPro Sync TX 0xFEA1 (under 0xFEE7 or any exposed service)
+              const fea1CharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, 'fea1'));
+              if (fea1CharModel) {
+                foundFea1 = true;
+                fea1Characteristic = fea1CharModel.nativeCharacteristic;
+                try {
+                  await startCharacteristicNotifications(fea1CharModel);
+                } catch (err) {
+                  fea1ErrorMsg =
+                    (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                }
+              }
+
               // Battery Service (0x180F -> 0x2A19)
               if (matchesShortUuid(svc.uuid, '180f')) {
-                const battChar = rawChars.find((c) => matchesShortUuid(c.uuid, '2a19'));
-                if (battChar) {
+                const battCharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, '2a19'));
+                if (battCharModel) {
                   foundBattery = true;
-                  batteryCharacteristic = battChar;
-                  if (battChar.properties.read) {
+                  batteryCharacteristic = battCharModel.nativeCharacteristic;
+                  if (battCharModel.properties.read) {
                     try {
-                      const val = await battChar.readValue();
+                      const val = await battCharModel.nativeCharacteristic.readValue();
                       const pct = parseBatteryLevel(val);
                       if (pct !== null) {
                         latestDemoBattery = pct;
                         state.batteryLevel = pct;
                         state.batteryLastUpdated = Date.now();
+                        battCharModel.lastRead = decodeCharacteristicValue(battCharModel.uuid, val);
                       }
                     } catch (_) {}
                   }
-                  if (battChar.properties.notify) {
+                  if (battCharModel.properties.notify) {
                     try {
-                      await battChar.startNotifications();
-                      battChar.addEventListener('characteristicvaluechanged', onBatteryNotification);
+                      await startCharacteristicNotifications(battCharModel);
                     } catch (_) {}
                   }
                 }
@@ -1532,14 +2019,13 @@
 
               // Heart Rate Service (0x180D -> 0x2A37)
               if (matchesShortUuid(svc.uuid, '180d')) {
-                const hrChar = rawChars.find((c) => matchesShortUuid(c.uuid, '2a37'));
-                if (hrChar) {
+                const hrCharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, '2a37'));
+                if (hrCharModel) {
                   foundHeartRate = true;
-                  hrCharacteristic = hrChar;
-                  if (hrChar.properties.notify) {
+                  hrCharacteristic = hrCharModel.nativeCharacteristic;
+                  if (hrCharModel.properties.notify) {
                     try {
-                      await hrChar.startNotifications();
-                      hrChar.addEventListener('characteristicvaluechanged', onHeartRateNotification);
+                      await startCharacteristicNotifications(hrCharModel);
                     } catch (_) {}
                   }
                 }
@@ -1549,11 +2035,12 @@
               if (matchesShortUuid(svc.uuid, '180a')) {
                 foundDeviceInfo = true;
                 const readText = async function (code) {
-                  const target = rawChars.find((c) => matchesShortUuid(c.uuid, code));
+                  const target = mappedChars.find((c) => matchesShortUuid(c.uuid, code));
                   if (!target || !target.properties.read) return null;
                   try {
-                    const val = await target.readValue();
+                    const val = await target.nativeCharacteristic.readValue();
                     const text = decodeUtf8String(val);
+                    target.lastRead = decodeCharacteristicValue(target.uuid, val);
                     return text.length ? text : null;
                   } catch (_) {
                     return null;
@@ -1567,10 +2054,85 @@
               }
             }
 
+            // Fallback direct reads if 0x1800 (Generic Access) was omitted from getPrimaryServices()
+            if (!foundGenericAccess && typeof server.getPrimaryService === 'function') {
+              try {
+                const gaSvc = await server.getPrimaryService('generic_access');
+                foundGenericAccess = true;
+                const nameChar = await gaSvc.getCharacteristic(GATT_UUIDS.DEVICE_NAME);
+                if (nameChar && nameChar.properties && nameChar.properties.read) {
+                  const val = await nameChar.readValue();
+                  const text = decodeUtf8String(val);
+                  if (text.length) {
+                    nextInfo.deviceName = text;
+                    state.deviceName = text;
+                  }
+                }
+              } catch (_) {}
+            }
+
+            // Fallback direct access for 0xFEE7 (0xFEC9 MAC Info & 0xFEA1 Sync TX) if omitted
+            if ((!foundMac || !foundFea1) && typeof server.getPrimaryService === 'function') {
+              try {
+                const fee7Svc = await server.getPrimaryService(FITCLOUDPRO_VENDOR_SERVICE);
+                if (!foundMac) {
+                  try {
+                    const macChar = await fee7Svc.getCharacteristic(GATT_UUIDS.VENDOR_FEC9);
+                    foundMac = true;
+                    if (macChar && macChar.properties && macChar.properties.read) {
+                      const val = await macChar.readValue();
+                      const formattedMac = formatMacAddress(val);
+                      if (formattedMac) nextInfo.macAddress = formattedMac;
+                    }
+                  } catch (_) {}
+                }
+                if (!foundFea1) {
+                  try {
+                    const fea1Native = await fee7Svc.getCharacteristic(GATT_UUIDS.VENDOR_FEA1);
+                    foundFea1 = true;
+                    fea1Characteristic = fea1Native;
+                    const fea1FallbackModel = {
+                      uuid: fea1Native.uuid || GATT_UUIDS.VENDOR_FEA1,
+                      shortUuid: '0xFEA1',
+                      name: 'FitCloudPro Sync TX',
+                      properties: {
+                        broadcast: false,
+                        read: Boolean(fea1Native.properties && fea1Native.properties.read),
+                        writeWithoutResponse: Boolean(fea1Native.properties && fea1Native.properties.writeWithoutResponse),
+                        write: Boolean(fea1Native.properties && fea1Native.properties.write),
+                        notify: Boolean(fea1Native.properties && fea1Native.properties.notify),
+                        indicate: Boolean(fea1Native.properties && fea1Native.properties.indicate),
+                        authenticatedSignedWrites: false,
+                      },
+                      lastRead: null,
+                      readError: null,
+                      isReading: false,
+                      isListening: false,
+                      isTogglingNotify: false,
+                      notifyCount: 0,
+                      nativeCharacteristic: fea1Native,
+                    };
+                    await startCharacteristicNotifications(fea1FallbackModel);
+                  } catch (err) {
+                    fea1ErrorMsg =
+                      (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                  }
+                }
+              } catch (_) {}
+            }
+
+            if (!nextInfo.deviceName && device.name) {
+              nextInfo.deviceName = device.name;
+            }
+
             state.batteryExposed = foundBattery;
             state.heartRateExposed = foundHeartRate;
+            state.genericAccessExposed = foundGenericAccess;
+            state.macExposed = foundMac;
             state.deviceInfo = nextInfo;
             state.deviceInfoExposed = foundDeviceInfo;
+            state.fea1Exposed = foundFea1;
+            state.fea1Error = fea1ErrorMsg;
             state.services = discovered;
             state.expandedServices = {};
             renderAll();
@@ -1628,14 +2190,21 @@
             let dataView;
             if (state.isDemoMode) {
               await new Promise((resolve) => window.setTimeout(resolve, 140));
-              dataView = getDemoCharacteristicPayload(charUuid, latestDemoBpm, latestDemoBattery);
+              dataView = getDemoCharacteristicPayload(
+                charUuid,
+                latestDemoBpm,
+                latestDemoBattery,
+                demoStep
+              );
             } else {
               if (!ch.nativeCharacteristic) {
                 throw new Error('Characteristic handle unavailable. Reconnect watch and try again.');
               }
               dataView = await ch.nativeCharacteristic.readValue();
             }
-            ch.lastRead = decodeCharacteristicValue(charUuid, dataView);
+            const decoded = decodeCharacteristicValue(charUuid, dataView);
+            decoded.source = 'read';
+            ch.lastRead = decoded;
             ch.readError = null;
           } catch (err) {
             ch.readError = (err && err.message) || 'Read rejected by peripheral.';
@@ -2090,15 +2659,54 @@
           }
 
           const rows = [
-            { label: 'Manufacturer', uuid: '0x2A29', value: info.manufacturer },
-            { label: 'Model', uuid: '0x2A24', value: info.model },
-            { label: 'Firmware Revision', uuid: '0x2A26', value: info.firmwareRevision },
+            {
+              label: 'Device Name',
+              uuid: '0x2A00 · 0x1800',
+              value: info.deviceName,
+              exposed: state.genericAccessExposed,
+              testId: 'device-info-name',
+            },
+            {
+              label: 'Hardware MAC',
+              uuid: '0xFEC9 · 0xFEE7',
+              value: info.macAddress,
+              exposed: state.macExposed,
+              testId: 'device-info-mac',
+            },
+            {
+              label: 'Manufacturer',
+              uuid: '0x2A29',
+              value: info.manufacturer,
+              exposed: state.deviceInfoExposed,
+            },
+            {
+              label: 'Model',
+              uuid: '0x2A24',
+              value: info.model,
+              exposed: state.deviceInfoExposed,
+            },
+            {
+              label: 'Firmware Revision',
+              uuid: '0x2A26',
+              value: info.firmwareRevision,
+              exposed: state.deviceInfoExposed,
+            },
           ];
           if (info.hardwareRevision) {
-            rows.push({ label: 'Chipset', uuid: '0x2A27', value: info.hardwareRevision });
+            rows.push({
+              label: 'Chipset',
+              uuid: '0x2A27',
+              value: info.hardwareRevision,
+              exposed: state.deviceInfoExposed,
+            });
           }
           if (info.softwareRevision) {
-            rows.push({ label: 'Display / Protocol', uuid: '0x2A28', value: info.softwareRevision });
+            rows.push({
+              label: 'Display / Protocol',
+              uuid: '0x2A28',
+              value: info.softwareRevision,
+              exposed: state.deviceInfoExposed,
+            });
           }
 
           els.deviceInfoRows.innerHTML = rows
@@ -2106,7 +2714,7 @@
               const val = row.value
                 ? row.value
                 : isConnected
-                  ? state.deviceInfoExposed === false
+                  ? row.exposed === false
                     ? 'Not exposed'
                     : 'Unavailable'
                   : '—';
@@ -2120,7 +2728,9 @@
                 escapeHtml(row.uuid) +
                 '</div>' +
                 '</dt>' +
-                '<dd class="text-right font-mono text-xs font-medium sm:text-sm ' +
+                '<dd' +
+                (row.testId ? ' data-testid="' + escapeHtml(row.testId) + '"' : '') +
+                ' class="text-right font-mono text-xs font-medium sm:text-sm ' +
                 (row.value ? 'text-slate-100' : 'text-slate-500') +
                 '">' +
                 escapeHtml(val) +
@@ -2131,14 +2741,136 @@
             .join('');
 
           if (isConnected) {
-            els.deviceInfoFooter.textContent =
-              state.deviceInfoExposed === false
-                ? 'Device Information (0x180A) was omitted by this watch firmware.'
-                : 'Standard GATT Device Information fields synced from peripheral.';
+            if (info.deviceName || info.macAddress) {
+              els.deviceInfoFooter.textContent =
+                state.deviceInfoExposed === false
+                  ? 'Synced Device Name (0x2A00) and Hardware MAC (0xFEC9); standard 0x180A omitted by watch.'
+                  : 'Synced Device Name (0x2A00), Hardware MAC (0xFEC9), and 0x180A attributes.';
+            } else {
+              els.deviceInfoFooter.textContent =
+                'Device Name, Hardware MAC, and 0x180A characteristics were omitted by this watch firmware.';
+            }
           } else {
             els.deviceInfoFooter.textContent =
-              'Reads Manufacturer, Model, and Firmware Revision from 0x180A.';
+              'Reads Device Name (0x2A00), Hardware MAC (0xFEC9), and 0x180A fields on connect.';
           }
+        }
+
+        function renderFea1StreamCard() {
+          const isConnected = state.status === 'connected';
+          const packets = state.fea1StreamLog;
+
+          els.fea1ClearLogBtn.disabled = packets.length === 0;
+
+          if (packets.length > 0) {
+            els.fea1PacketCount.textContent =
+              '· ' + packets.length + (packets.length === 1 ? ' packet' : ' packets');
+            els.fea1PacketCount.classList.remove('hidden');
+          } else {
+            els.fea1PacketCount.classList.add('hidden');
+          }
+
+          if (isConnected && state.fea1Listening) {
+            els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-emerald-400 animate-pulse';
+            els.fea1StreamStatus.className = 'font-mono text-emerald-400';
+            els.fea1StreamStatus.textContent = state.isDemoMode
+              ? 'Listening · Simulated 0xFEA1 stream'
+              : 'Listening · Notifications active';
+          } else if (isConnected && state.fea1Exposed === false) {
+            els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-amber-400';
+            els.fea1StreamStatus.className = 'font-mono text-amber-300';
+            els.fea1StreamStatus.textContent = '0xFEA1 not exposed by peripheral';
+          } else if (isConnected && state.fea1Error) {
+            els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-rose-400';
+            els.fea1StreamStatus.className = 'font-mono text-rose-300';
+            els.fea1StreamStatus.textContent = 'Subscribe error: ' + state.fea1Error;
+          } else if (isConnected) {
+            els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-slate-500';
+            els.fea1StreamStatus.className = 'font-mono text-slate-400';
+            els.fea1StreamStatus.textContent = 'Paused · Re-enable in Watch Inspector';
+          } else {
+            els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-slate-600';
+            els.fea1StreamStatus.className = 'font-mono text-slate-400';
+            els.fea1StreamStatus.textContent = 'Standby · Connect watch to subscribe';
+          }
+
+          if (!packets.length) {
+            const title = !isConnected
+              ? 'No 0xFEA1 stream packets yet'
+              : state.fea1Exposed === false
+                ? 'FitCloudPro Sync TX (0xFEA1) not found'
+                : state.fea1Listening
+                  ? 'Listening for incoming 0xFEA1 packets'
+                  : '0xFEA1 notification stream paused';
+            const desc = !isConnected
+              ? 'Connect your GTR 3 Pro or enable Demo Mode to log incoming FitCloudPro Sync TX packets.'
+              : state.fea1Exposed === false
+                ? 'Open Watch Inspector to check which vendor notify characteristics this firmware exposes.'
+                : 'Every incoming notification packet will appear here with its timestamp, raw hex bytes, and decimal byte values.';
+
+            els.fea1StreamContainer.innerHTML =
+              '<div class="flex h-36 flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-[#080C15]/70 px-4 text-center">' +
+              '<p class="text-sm font-medium text-slate-300">' +
+              escapeHtml(title) +
+              '</p>' +
+              '<p class="mt-1 max-w-md text-xs text-slate-500">' +
+              escapeHtml(desc) +
+              '</p>' +
+              '</div>';
+          } else {
+            const rowsHtml = packets
+              .map(function (pkt) {
+                return (
+                  '<div class="grid grid-cols-1 gap-1.5 px-3.5 py-2.5 font-mono text-xs sm:grid-cols-12 sm:items-center sm:gap-3">' +
+                  '<div class="flex items-center justify-between gap-2 text-slate-400 tabular-nums sm:col-span-3 sm:justify-start">' +
+                  '<span class="text-slate-500">#' +
+                  pkt.id +
+                  '</span>' +
+                  '<span>' +
+                  escapeHtml(formatClockWithMs(pkt.timestamp)) +
+                  '</span>' +
+                  '<span class="text-slate-500 sm:hidden">' +
+                  pkt.byteLength +
+                  'B</span>' +
+                  '</div>' +
+                  '<div class="hidden text-slate-500 tabular-nums sm:col-span-1 sm:block">' +
+                  pkt.byteLength +
+                  'B</div>' +
+                  '<div class="break-all sm:col-span-4">' +
+                  '<span class="text-slate-500 sm:hidden">Hex: </span>' +
+                  '<span class="font-medium text-sky-300">' +
+                  escapeHtml(pkt.hex) +
+                  '</span>' +
+                  '</div>' +
+                  '<div class="break-all sm:col-span-4">' +
+                  '<span class="text-slate-500 sm:hidden">Dec: </span>' +
+                  '<span class="text-emerald-300">[' +
+                  escapeHtml(pkt.decimals) +
+                  ']</span>' +
+                  '</div>' +
+                  '</div>'
+                );
+              })
+              .join('');
+
+            els.fea1StreamContainer.innerHTML =
+              '<div class="overflow-hidden rounded-xl border border-slate-800/90 bg-[#080C15]">' +
+              '<div class="hidden grid-cols-12 gap-3 border-b border-slate-800/90 bg-[#0A101B] px-3.5 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-slate-500 sm:grid">' +
+              '<div class="col-span-3">Timestamp</div>' +
+              '<div class="col-span-1">Len</div>' +
+              '<div class="col-span-4">Raw Hex Bytes</div>' +
+              '<div class="col-span-4">Decimal Values</div>' +
+              '</div>' +
+              '<div class="max-h-72 divide-y divide-slate-800/70 overflow-y-auto">' +
+              rowsHtml +
+              '</div>' +
+              '</div>';
+          }
+
+          els.fea1StreamFooter.textContent =
+            'Automatically calls startNotifications() on FitCloudPro Sync TX (0xFEA1) upon connection. Showing latest ' +
+            MAX_FEA1_STREAM_LOG +
+            ' packets.';
         }
 
         function isServiceExpanded(uuid) {
@@ -2209,43 +2941,94 @@
                   const items = svc.characteristics
                     .map(function (ch) {
                       const propsStr = formatPropertyFlags(ch.properties);
-                      const actionHtml = ch.properties.read
-                        ? '<button type="button" data-action="read-char" data-service-uuid="' +
-                          escapeHtml(svc.uuid) +
-                          '" data-char-uuid="' +
-                          escapeHtml(ch.uuid) +
-                          '" ' +
-                          (ch.isReading ? 'disabled ' : '') +
-                          'aria-label="Read ' +
-                          escapeHtml(ch.name) +
-                          ' (' +
-                          escapeHtml(ch.shortUuid) +
-                          ')" class="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-lg border border-sky-500/40 bg-sky-500/10 px-3.5 py-2 text-xs font-semibold text-sky-300 transition-colors hover:bg-sky-500/20 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">' +
-                          (ch.isReading
-                            ? '<svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Reading...</span>'
-                            : '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg><span>Read</span>') +
-                          '</button>'
+                      const canRead = Boolean(ch.properties.read);
+                      const canNotify = Boolean(ch.properties.notify || ch.properties.indicate);
+
+                      const buttons = [];
+                      if (canRead) {
+                        buttons.push(
+                          '<button type="button" data-action="read-char" data-service-uuid="' +
+                            escapeHtml(svc.uuid) +
+                            '" data-char-uuid="' +
+                            escapeHtml(ch.uuid) +
+                            '" ' +
+                            (ch.isReading ? 'disabled ' : '') +
+                            'aria-label="Read ' +
+                            escapeHtml(ch.name) +
+                            ' (' +
+                            escapeHtml(ch.shortUuid) +
+                            ')" class="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-lg border border-sky-500/40 bg-sky-500/10 px-3.5 py-2 text-xs font-semibold text-sky-300 transition-colors hover:bg-sky-500/20 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">' +
+                            (ch.isReading
+                              ? '<svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Reading...</span>'
+                              : '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg><span>Read</span>') +
+                            '</button>'
+                        );
+                      }
+                      if (canNotify) {
+                        const notifyBtnClasses = ch.isListening
+                          ? 'border-emerald-400/60 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
+                          : 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20';
+                        const notifyBtnInner = ch.isTogglingNotify
+                          ? '<svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Updating...</span>'
+                          : ch.isListening
+                            ? '<span aria-hidden="true" class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Listening (Notify)</span>'
+                            : '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg><span>Listen (Notify)</span>';
+                        buttons.push(
+                          '<button type="button" data-action="toggle-notify" data-service-uuid="' +
+                            escapeHtml(svc.uuid) +
+                            '" data-char-uuid="' +
+                            escapeHtml(ch.uuid) +
+                            '" data-testid="toggle-notify-' +
+                            escapeHtml(ch.shortUuid) +
+                            '" aria-pressed="' +
+                            String(Boolean(ch.isListening)) +
+                            '" ' +
+                            (ch.isTogglingNotify ? 'disabled ' : '') +
+                            'aria-label="' +
+                            (ch.isListening ? 'Stop listening to ' : 'Listen (Notify) on ') +
+                            escapeHtml(ch.name) +
+                            ' (' +
+                            escapeHtml(ch.shortUuid) +
+                            ')" class="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ' +
+                            notifyBtnClasses +
+                            '">' +
+                            notifyBtnInner +
+                            '</button>'
+                        );
+                      }
+
+                      const actionHtml = buttons.length
+                        ? buttons.join('')
                         : '<span class="whitespace-nowrap font-mono text-xs text-slate-500">Not readable</span>';
 
                       const readResultHtml = ch.lastRead
                         ? '<div data-testid="char-read-result-' +
                           escapeHtml(ch.shortUuid) +
-                          '" class="mt-3 grid grid-cols-1 gap-2 rounded-xl border border-slate-800/90 bg-[#0D131F] px-3.5 py-2.5 font-mono text-xs sm:grid-cols-12 sm:items-center">' +
-                          '<div class="sm:col-span-5"><span class="text-slate-500">Decoded: </span><span class="font-medium text-emerald-300">' +
+                          '" class="mt-3 grid grid-cols-1 gap-2 rounded-xl border ' +
+                          (ch.isListening ? 'border-emerald-500/35' : 'border-slate-800/90') +
+                          ' bg-[#0D131F] px-3.5 py-2.5 font-mono text-xs sm:grid-cols-12 sm:items-center">' +
+                          '<div class="sm:col-span-4">' +
+                          (ch.lastRead.source === 'notify'
+                            ? '<span class="mr-1.5 font-semibold text-emerald-400">LIVE</span>'
+                            : '') +
+                          '<span class="text-slate-500">Decoded: </span><span class="font-medium text-emerald-300">' +
                           escapeHtml(ch.lastRead.decoded) +
                           '</span></div>' +
-                          '<div class="truncate sm:col-span-5"><span class="text-slate-500">Hex: </span><span class="text-slate-200">' +
+                          '<div class="break-all sm:col-span-5"><span class="text-slate-500">Hex: </span><span class="text-sky-200">' +
                           escapeHtml(ch.lastRead.hex) +
                           '</span></div>' +
-                          '<div class="tabular-nums text-slate-500 sm:col-span-2 sm:text-right">' +
+                          '<div class="tabular-nums text-slate-500 sm:col-span-3 sm:text-right">' +
                           ch.lastRead.byteLength +
                           'B · ' +
                           escapeHtml(formatClock(ch.lastRead.readAt)) +
+                          (ch.notifyCount > 0 && ch.lastRead.source === 'notify'
+                            ? ' (#' + ch.notifyCount + ')'
+                            : '') +
                           '</div></div>'
                         : '';
 
                       const readErrHtml = ch.readError
-                        ? '<div class="mt-2.5 rounded-lg border border-rose-500/30 bg-rose-950/20 px-3 py-2 font-mono text-xs text-rose-300">Read error: ' +
+                        ? '<div class="mt-2.5 rounded-lg border border-rose-500/30 bg-rose-950/20 px-3 py-2 font-mono text-xs text-rose-300">Error: ' +
                           escapeHtml(ch.readError) +
                           '</div>'
                         : '';
@@ -2267,7 +3050,7 @@
                         '<div class="font-mono text-[11px] tracking-wide text-slate-400">' +
                         escapeHtml(propsStr) +
                         '</div></div>' +
-                        '<div class="flex shrink-0 items-center gap-2">' +
+                        '<div class="flex shrink-0 flex-wrap items-center gap-2">' +
                         actionHtml +
                         '</div></div>' +
                         readResultHtml +
@@ -2357,6 +3140,7 @@
           renderHeartRateCard();
           renderBatteryCard();
           renderDeviceInfoCard();
+          renderFea1StreamCard();
         }
 
         function renderAll() {
@@ -2406,6 +3190,10 @@
         els.deviceInfoInspectBtn.addEventListener('click', function () {
           setActiveTab('inspector');
         });
+        els.fea1ClearLogBtn.addEventListener('click', function () {
+          state.fea1StreamLog = [];
+          renderFea1StreamCard();
+        });
         els.inspectorConnectBtn.addEventListener('click', connectWatch);
         els.inspectorDemoBtn.addEventListener('click', function () {
           toggleDemoMode(true);
@@ -2437,7 +3225,7 @@
           }
         });
 
-        // Watch Inspector Search, Toggle All, Accordion & Characteristic Read
+        // Watch Inspector Search, Toggle All, Accordion, Characteristic Read & Live Notify
         els.gattSearchInput.addEventListener('input', function (e) {
           state.searchQuery = e.target.value;
           renderInspectorServicesList();
@@ -2478,6 +3266,10 @@
             const svcUuid = btn.getAttribute('data-service-uuid');
             const charUuid = btn.getAttribute('data-char-uuid');
             readCharacteristic(svcUuid, charUuid);
+          } else if (action === 'toggle-notify') {
+            const svcUuid = btn.getAttribute('data-service-uuid');
+            const charUuid = btn.getAttribute('data-char-uuid');
+            toggleCharacteristicNotify(svcUuid, charUuid);
           } else if (action === 'clear-search') {
             state.searchQuery = '';
             els.gattSearchInput.value = '';
