@@ -1,0 +1,2498 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Zeblaze GTR 3 Pro (FitCloudPro) — Web Bluetooth Companion</title>
+    <meta
+      name="description"
+      content="Dark-mode Web Bluetooth smartwatch companion app for the Zeblaze GTR 3 Pro (FitCloudPro / Realtek 8763EW) with live heart rate telemetry, battery monitoring, device information, and a GATT Service Explorer."
+    />
+    <meta property="og:title" content="Zeblaze GTR 3 Pro (FitCloudPro) — Web Bluetooth Companion" />
+    <meta
+      property="og:description"
+      content="Connect directly to your Zeblaze GTR 3 Pro (FitCloudPro) over Web Bluetooth to inspect live heart rate, battery level, Realtek 8763EW firmware info, and GATT services."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#06090F" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html {
+        background-color: #06090f;
+        color: #f1f5f9;
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background-color: #06090f;
+        letter-spacing: 0.005em;
+      }
+      .pb-safe {
+        padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+      }
+      .text-balance {
+        text-wrap: balance;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-[#06090F] font-sans text-slate-100 antialiased selection:bg-sky-500/30 selection:text-sky-100">
+    <div id="top" class="min-h-dvh bg-[#06090F] text-slate-100">
+      <!-- Top Bar (3-Zone Contract) -->
+      <header class="sticky top-0 z-30 border-b border-slate-800/80 bg-[#06090F]/90 backdrop-blur-md">
+        <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-8 px-4 sm:h-16 sm:px-6">
+          <!-- Zone 1: Brand Wordmark -->
+          <a
+            href="#top"
+            id="brand-home-link"
+            class="shrink-0 whitespace-nowrap text-base font-semibold tracking-tight text-slate-50 sm:text-lg"
+          >
+            Zeblaze GTR 3 Pro
+          </a>
+
+          <!-- Zone 2: Desktop Tab Navigation -->
+          <nav aria-label="Primary views" class="hidden items-center gap-6 md:flex" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              id="desktop-tab-dashboard"
+              data-tab-trigger="dashboard"
+              aria-selected="true"
+              class="relative shrink-0 whitespace-nowrap py-2 text-sm font-medium text-sky-400 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400"
+            >
+              Dashboard
+              <span
+                data-tab-indicator="dashboard"
+                aria-hidden="true"
+                class="absolute right-0 -bottom-[17px] left-0 h-0.5 bg-sky-400"
+              ></span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              id="desktop-tab-inspector"
+              data-tab-trigger="inspector"
+              aria-selected="false"
+              class="relative shrink-0 whitespace-nowrap py-2 text-sm font-medium text-slate-400 transition-colors hover:text-slate-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400"
+            >
+              <span>Watch Inspector</span>
+              <span
+                id="desktop-service-count"
+                class="ml-1.5 hidden font-mono text-xs tabular-nums text-slate-400"
+              ></span>
+              <span
+                data-tab-indicator="inspector"
+                aria-hidden="true"
+                class="absolute right-0 -bottom-[17px] left-0 hidden h-0.5 bg-sky-400"
+              ></span>
+            </button>
+          </nav>
+
+          <!-- Zone 3: Single Primary Action -->
+          <div class="flex shrink-0 items-center">
+            <button
+              type="button"
+              id="topbar-action-btn"
+              class="inline-flex min-h-[40px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-sky-500 px-3.5 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-sky-400 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 sm:text-sm"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m7 7 10 10-5 5V2l5 5L7 17" />
+              </svg>
+              <span>Connect Watch</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Workspace -->
+      <main class="mx-auto max-w-6xl space-y-6 px-4 pt-6 pb-24 sm:px-6 sm:pt-8 md:pb-12">
+        <!-- Browser Support Notice -->
+        <div
+          id="browser-support-notice"
+          role="alert"
+          class="hidden flex-col gap-4 rounded-2xl border border-amber-500/30 bg-[#121318] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+        >
+          <div class="flex items-start gap-3.5">
+            <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+              </svg>
+            </div>
+            <div class="space-y-1">
+              <h2 id="browser-notice-title" class="text-sm font-semibold text-amber-200">
+                Web Bluetooth Not Supported in This Browser
+              </h2>
+              <p id="browser-notice-body" class="text-sm leading-relaxed text-slate-300">
+                To connect directly to your Zeblaze GTR 3 Pro (FitCloudPro), open this app in Google
+                Chrome on Android or Windows over HTTPS. iOS Safari and Firefox do not expose Web
+                Bluetooth.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="notice-demo-btn"
+            class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300 transition-colors hover:bg-emerald-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+            <span>Preview Demo Mode</span>
+          </button>
+        </div>
+
+        <!-- Bluetooth Connection Panel -->
+        <section
+          aria-label="Bluetooth connection panel"
+          class="rounded-2xl border border-slate-800/90 bg-[#0D131F] p-4 sm:p-6"
+        >
+          <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+            <!-- Watch Hardware Visual + Status -->
+            <div class="flex min-w-0 flex-1 items-center gap-4 sm:gap-5">
+              <div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-800 bg-[#06090F] sm:h-28 sm:w-28">
+                <img
+                  id="watch-hero-img"
+                  src="/src/assets/images/gtr3_pro_smartwatch_1795681516606.jpg"
+                  alt="Zeblaze GTR 3 Pro (FitCloudPro) circular titanium smartwatch"
+                  referrerpolicy="no-referrer"
+                  class="h-full w-full object-cover"
+                  onerror="this.classList.add('hidden'); document.getElementById('watch-hero-svg-fallback').classList.remove('hidden');"
+                />
+                <!-- Standalone Self-Contained Smartwatch Vector Fallback -->
+                <div
+                  id="watch-hero-svg-fallback"
+                  class="hidden flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0F172A] via-[#090D16] to-[#06090F] p-2"
+                >
+                  <svg viewBox="0 0 100 100" class="h-full w-full" role="img" aria-label="Zeblaze GTR 3 Pro dial illustration">
+                    <rect x="34" y="3" width="32" height="16" rx="4" fill="#1E293B" />
+                    <rect x="34" y="81" width="32" height="16" rx="4" fill="#1E293B" />
+                    <rect x="85" y="34" width="6" height="10" rx="2" fill="#475569" />
+                    <rect x="85" y="52" width="6" height="12" rx="2" fill="#334155" />
+                    <circle cx="50" cy="50" r="36" fill="#0B1120" stroke="#475569" stroke-width="4" />
+                    <circle cx="50" cy="50" r="30" fill="#050810" stroke="#1E293B" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="24" fill="none" stroke="#0EA5E9" stroke-width="3" stroke-dasharray="110 42" stroke-linecap="round" transform="rotate(-90 50 50)" />
+                    <circle cx="50" cy="50" r="18" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="88 28" stroke-linecap="round" transform="rotate(-90 50 50)" />
+                    <text x="50" y="53" text-anchor="middle" fill="#F8FAFC" font-size="10.5" font-family="JetBrains Mono, monospace" font-weight="600">GTR 3</text>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="min-w-0 space-y-1">
+                <div class="flex items-center gap-2 text-xs font-medium">
+                  <span
+                    id="connection-dot"
+                    aria-hidden="true"
+                    class="h-2 w-2 shrink-0 rounded-full bg-slate-600"
+                  ></span>
+                  <span
+                    id="connection-status-label"
+                    data-testid="connection-status-label"
+                    class="text-slate-400"
+                  >
+                    Disconnected
+                  </span>
+                </div>
+
+                <h1
+                  id="device-title-heading"
+                  class="text-balance text-lg font-semibold tracking-tight text-slate-50 sm:text-2xl"
+                >
+                  Zeblaze GTR 3 Pro (FitCloudPro)
+                </h1>
+
+                <p id="device-subtitle-text" class="text-xs leading-relaxed text-slate-400 sm:text-sm">
+                  1.43&quot; 466×466 AMOLED · Realtek 8763EW · Pair over Web Bluetooth to stream
+                  telemetry.
+                </p>
+              </div>
+            </div>
+
+            <!-- Demo Switch & Connect/Disconnect CTA -->
+            <div class="flex shrink-0 flex-col gap-3.5 border-t border-slate-800/80 pt-4 lg:flex-row lg:items-center lg:border-t-0 lg:pt-0">
+              <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800/90 bg-[#080C15] px-4 py-3 lg:justify-start">
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-slate-200">Demo Mode</div>
+                  <div class="text-xs text-slate-400">Simulated live BPM, battery &amp; GATT tree</div>
+                </div>
+
+                <button
+                  type="button"
+                  id="demo-mode-switch"
+                  role="switch"
+                  aria-checked="false"
+                  aria-label="Toggle Demo Mode"
+                  class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border border-slate-700 bg-slate-800 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                >
+                  <span
+                    id="demo-mode-thumb"
+                    aria-hidden="true"
+                    class="inline-block h-5 w-5 translate-x-1 transform rounded-full bg-white transition-transform duration-150"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  id="hero-connect-btn"
+                  class="inline-flex min-h-[48px] w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-sky-400 disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 lg:w-auto"
+                >
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m7 7 10 10-5 5V2l5 5L7 17" />
+                  </svg>
+                  <span>Connect GTR 3 Pro</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actionable Error Alert -->
+          <div
+            id="bluetooth-error-banner"
+            role="alert"
+            class="mt-5 hidden items-start justify-between gap-4 rounded-xl border border-rose-500/30 bg-rose-950/25 px-4 py-3 text-sm"
+          >
+            <div class="space-y-0.5">
+              <div id="bluetooth-error-title" class="font-semibold text-rose-200"></div>
+              <p id="bluetooth-error-message" class="text-slate-300"></p>
+            </div>
+            <button
+              type="button"
+              id="dismiss-error-btn"
+              aria-label="Dismiss error message"
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-100"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- VIEW 1: LIVE WATCH DASHBOARD -->
+        <section
+          id="view-dashboard"
+          aria-label="Live Watch Dashboard"
+          class="grid grid-cols-1 gap-5 lg:grid-cols-12"
+        >
+          <!-- Dominant Telemetry Anchor: Live Heart Rate Card -->
+          <div class="lg:col-span-7">
+            <article
+              aria-label="Live Heart Rate"
+              class="flex h-full flex-col justify-between rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:p-6"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+                    <svg class="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                    </svg>
+                    <span>Live Heart Rate</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono text-slate-500">0x2A37</span>
+                  </div>
+
+                  <div class="flex items-baseline gap-2.5 pt-1">
+                    <span
+                      id="hr-bpm-value"
+                      data-testid="heart-rate-bpm"
+                      class="font-mono text-4xl font-bold tracking-tight tabular-nums text-slate-50 sm:text-5xl"
+                    >
+                      —
+                    </span>
+                    <span class="font-mono text-sm font-medium text-slate-400">BPM</span>
+                  </div>
+                </div>
+
+                <div class="text-right">
+                  <div id="hr-zone-label" class="text-sm font-medium text-emerald-400">Standby</div>
+                  <div id="hr-stream-status" class="mt-0.5 font-mono text-xs tabular-nums text-slate-500">
+                    Awaiting watch stream
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sparkline Stage -->
+              <div id="hr-chart-stage" class="mt-6"></div>
+
+              <!-- Min / Avg / Max Stats -->
+              <div class="mt-5 grid grid-cols-3 divide-x divide-slate-800/80 border-t border-slate-800/80 pt-4">
+                <div class="pr-3">
+                  <div class="text-xs text-slate-400">Session Min</div>
+                  <div id="hr-stat-min" class="mt-1 font-mono text-base font-semibold tabular-nums text-slate-100">
+                    —
+                  </div>
+                </div>
+                <div class="px-3">
+                  <div class="text-xs text-slate-400">Session Avg</div>
+                  <div id="hr-stat-avg" class="mt-1 font-mono text-base font-semibold tabular-nums text-slate-100">
+                    —
+                  </div>
+                </div>
+                <div class="pl-3">
+                  <div class="text-xs text-slate-400">Session Max</div>
+                  <div id="hr-stat-max" class="mt-1 font-mono text-base font-semibold tabular-nums text-slate-100">
+                    —
+                  </div>
+                </div>
+              </div>
+
+              <!-- FitCloudPro Active Measurement Note -->
+              <p class="mt-4 border-t border-slate-800/70 pt-3 text-xs leading-relaxed text-slate-400">
+                Note: FitCloudPro watches like the Zeblaze GTR 3 Pro only broadcast live heart rate
+                over Bluetooth when an active heart rate measurement is triggered on the watch.
+              </p>
+            </article>
+          </div>
+
+          <!-- Secondary Stacked Telemetry: Battery & Device Info -->
+          <div class="flex flex-col gap-5 lg:col-span-5">
+            <!-- Battery Level Card -->
+            <article
+              aria-label="Battery Level"
+              class="flex flex-col justify-between rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:p-6"
+            >
+              <div>
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+                    <svg class="h-4 w-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2" />
+                      <path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1" />
+                      <path d="m11 7-3 5h4l-3 5" />
+                      <line x1="22" x2="22" y1="11" y2="13" />
+                    </svg>
+                    <span>Battery Level</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono text-slate-500">0x180F</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    id="battery-refresh-btn"
+                    aria-label="Refresh battery level"
+                    class="hidden min-h-[36px] min-w-[36px] items-center justify-center rounded-lg border border-slate-800 bg-[#080C15] text-slate-400 transition-colors hover:border-slate-700 hover:text-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                      <path d="M21 3v5h-5" />
+                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                      <path d="M8 16H3v5" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="mt-4 flex items-baseline justify-between gap-3">
+                  <div class="flex items-baseline gap-1.5">
+                    <span
+                      id="battery-level-value"
+                      data-testid="battery-level-value"
+                      class="font-mono text-4xl font-bold tracking-tight tabular-nums text-slate-50"
+                    >
+                      —
+                    </span>
+                    <span class="font-mono text-base font-medium text-slate-400">%</span>
+                  </div>
+
+                  <div class="text-right">
+                    <div id="battery-status-text" class="text-xs font-medium text-slate-400">
+                      Not reading
+                    </div>
+                    <div id="battery-estimate-text" class="mt-0.5 font-mono text-xs tabular-nums text-slate-500">
+                      —
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Segmented Visual Battery Bar -->
+                <div class="mt-5" aria-hidden="true">
+                  <div class="flex items-center gap-1.5">
+                    <div
+                      id="battery-bar-segments"
+                      class="grid flex-1 grid-cols-10 gap-1.5 rounded-xl border border-slate-800 bg-[#080C15] p-2"
+                    ></div>
+                    <div class="h-5 w-1.5 rounded-r-sm bg-slate-700"></div>
+                  </div>
+                  <div class="mt-2.5 flex items-center justify-between font-mono text-[11px] tabular-nums text-slate-500">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="battery-footer-note" class="mt-5 border-t border-slate-800/80 pt-3.5 text-xs text-slate-400">
+                Reads standard Battery Service (0x180F) upon connection.
+              </div>
+            </article>
+
+            <!-- Device Information Card -->
+            <article
+              aria-label="Device Information"
+              class="flex flex-col justify-between rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:p-6"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+                    <svg class="h-4 w-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect width="16" height="16" x="4" y="4" rx="2" />
+                      <rect width="6" height="6" x="9" y="9" rx="1" />
+                      <path d="M15 2v2" />
+                      <path d="M15 20v2" />
+                      <path d="M2 15h2" />
+                      <path d="M2 9h2" />
+                      <path d="M20 15h2" />
+                      <path d="M20 9h2" />
+                      <path d="M9 2v2" />
+                      <path d="M9 20v2" />
+                    </svg>
+                    <span>Device Information</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono text-slate-500">0x180A</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    id="device-info-inspect-btn"
+                    class="hidden whitespace-nowrap text-xs font-medium text-sky-400 transition-colors hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  >
+                    Inspect GATT
+                  </button>
+                </div>
+
+                <dl id="device-info-rows" class="mt-4 divide-y divide-slate-800/80"></dl>
+              </div>
+
+              <div id="device-info-footer" class="mt-4 border-t border-slate-800/80 pt-3.5 text-xs text-slate-400">
+                Reads Manufacturer, Model, and Firmware Revision from 0x180A.
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- VIEW 2: WATCH INSPECTOR (GATT SERVICE EXPLORER) -->
+        <section
+          id="view-inspector"
+          aria-label="Watch Inspector GATT Service Explorer"
+          class="hidden space-y-4"
+        >
+          <!-- Disconnected Empty State -->
+          <div
+            id="inspector-empty-state"
+            class="rounded-2xl border border-slate-800/90 bg-[#0D131F] p-8 text-center sm:p-12"
+          >
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-800 bg-[#080C15] text-sky-400">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="16" height="16" x="4" y="4" rx="2" />
+                <rect width="6" height="6" x="9" y="9" rx="1" />
+                <path d="M15 2v2" />
+                <path d="M15 20v2" />
+                <path d="M2 15h2" />
+                <path d="M2 9h2" />
+                <path d="M20 15h2" />
+                <path d="M20 9h2" />
+                <path d="M9 2v2" />
+                <path d="M9 20v2" />
+              </svg>
+            </div>
+            <h2 class="mt-4 text-lg font-semibold text-slate-100">Watch Inspector Ready</h2>
+            <p class="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-400">
+              Connect your Zeblaze GTR 3 Pro (FitCloudPro) to enumerate every exposed GATT Service
+              UUID, characteristic flag, and raw byte payload—including Realtek &amp; FitCloudPro
+              vendor services
+              <span class="font-mono text-slate-300">0xFEE7</span>,
+              <span class="font-mono text-slate-300">0xFFD0</span>, and
+              <span class="font-mono text-slate-300">6e400001</span>.
+            </p>
+            <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <button
+                type="button"
+                id="inspector-connect-btn"
+                class="inline-flex min-h-[44px] w-full items-center justify-center whitespace-nowrap rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-semibold text-slate-950 transition-colors hover:bg-sky-400 sm:w-auto"
+              >
+                Connect GTR 3 Pro
+              </button>
+              <button
+                type="button"
+                id="inspector-demo-btn"
+                class="inline-flex min-h-[44px] w-full items-center justify-center whitespace-nowrap rounded-xl border border-slate-700 bg-[#080C15] px-5 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:border-slate-600 hover:bg-slate-800 sm:w-auto"
+              >
+                Load Demo GATT Tree
+              </button>
+            </div>
+          </div>
+
+          <!-- Connected Explorer Content -->
+          <div id="inspector-connected-shell" class="hidden space-y-4">
+            <div class="flex flex-col gap-4 rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 class="text-base font-semibold text-slate-100 sm:text-lg">
+                  GATT Service Explorer
+                </h2>
+                <p
+                  id="inspector-summary-meta"
+                  class="mt-0.5 font-mono text-xs tabular-nums text-slate-400"
+                ></p>
+              </div>
+
+              <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+                <div class="relative">
+                  <svg
+                    class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                  <label for="gatt-search" class="sr-only">Filter GATT services or UUIDs</label>
+                  <input
+                    id="gatt-search"
+                    type="search"
+                    placeholder="Filter UUID or name..."
+                    class="min-h-[42px] w-full rounded-xl border border-slate-800 bg-[#080C15] py-2 pr-3 pl-9 font-mono text-xs text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none sm:w-60"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  id="inspector-toggle-all-btn"
+                  class="inline-flex min-h-[42px] items-center justify-center whitespace-nowrap rounded-xl border border-slate-800 bg-[#080C15] px-3.5 py-2 text-xs font-medium text-slate-300 transition-colors hover:border-slate-700 hover:text-slate-100"
+                >
+                  Collapse All
+                </button>
+              </div>
+            </div>
+
+            <div id="gatt-services-container" data-testid="gatt-service-list" class="space-y-3"></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Mobile Bottom Tab Bar -->
+      <nav
+        aria-label="Mobile view switcher"
+        class="pb-safe fixed right-0 bottom-0 left-0 z-30 border-t border-slate-800/90 bg-[#080C14]/95 backdrop-blur-md md:hidden"
+      >
+        <div class="grid h-14 grid-cols-2 items-center" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            id="mobile-tab-dashboard"
+            data-tab-trigger="dashboard"
+            aria-selected="true"
+            class="flex min-h-[48px] flex-col items-center justify-center gap-0.5 whitespace-nowrap text-[11px] font-medium text-sky-400 transition-colors focus-visible:outline-2 focus-visible:outline-sky-400"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
+            </svg>
+            <span>Dashboard</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            id="mobile-tab-inspector"
+            data-tab-trigger="inspector"
+            aria-selected="false"
+            class="flex min-h-[48px] flex-col items-center justify-center gap-0.5 whitespace-nowrap text-[11px] font-medium text-slate-400 transition-colors hover:text-slate-200 focus-visible:outline-2 focus-visible:outline-sky-400"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="16" height="16" x="4" y="4" rx="2" />
+              <rect width="6" height="6" x="9" y="9" rx="1" />
+              <path d="M15 2v2" />
+              <path d="M15 20v2" />
+              <path d="M2 15h2" />
+              <path d="M2 9h2" />
+              <path d="M20 15h2" />
+              <path d="M20 9h2" />
+              <path d="M9 2v2" />
+              <path d="M9 20v2" />
+            </svg>
+            <span id="mobile-inspector-label">Watch Inspector</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+
+        // =====================================================================
+        // 1. Constants & Bluetooth GATT UUID Definitions
+        // =====================================================================
+        const FITCLOUDPRO_VENDOR_SERVICE = '0000fee7-0000-1000-8000-00805f9b34fb';
+        const REALTEK_VENDOR_SERVICE = '0000ffd0-0000-1000-8000-00805f9b34fb';
+        const FITCLOUDPRO_UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+
+        // Includes 0x180F, 0x180A, 0x180D, 0x1800, 0xFEE7, 0xFFD0, and FitCloudPro UART
+        const OPTIONAL_BLUETOOTH_SERVICES = [
+          0x180f,
+          0x180a,
+          0x180d,
+          'generic_access',
+          FITCLOUDPRO_VENDOR_SERVICE,
+          REALTEK_VENDOR_SERVICE,
+          FITCLOUDPRO_UART_SERVICE,
+        ];
+
+        const GATT_UUIDS = {
+          GENERIC_ACCESS: '00001800-0000-1000-8000-00805f9b34fb',
+          DEVICE_NAME: '00002a00-0000-1000-8000-00805f9b34fb',
+          APPEARANCE: '00002a01-0000-1000-8000-00805f9b34fb',
+          DEVICE_INFORMATION: '0000180a-0000-1000-8000-00805f9b34fb',
+          MANUFACTURER_NAME: '00002a29-0000-1000-8000-00805f9b34fb',
+          MODEL_NUMBER: '00002a24-0000-1000-8000-00805f9b34fb',
+          FIRMWARE_REVISION: '00002a26-0000-1000-8000-00805f9b34fb',
+          HARDWARE_REVISION: '00002a27-0000-1000-8000-00805f9b34fb',
+          SOFTWARE_REVISION: '00002a28-0000-1000-8000-00805f9b34fb',
+          BATTERY_SERVICE: '0000180f-0000-1000-8000-00805f9b34fb',
+          BATTERY_LEVEL: '00002a19-0000-1000-8000-00805f9b34fb',
+          HEART_RATE_SERVICE: '0000180d-0000-1000-8000-00805f9b34fb',
+          HEART_RATE_MEASUREMENT: '00002a37-0000-1000-8000-00805f9b34fb',
+          BODY_SENSOR_LOCATION: '00002a38-0000-1000-8000-00805f9b34fb',
+          HEART_RATE_CONTROL_POINT: '00002a39-0000-1000-8000-00805f9b34fb',
+          VENDOR_FEE7: FITCLOUDPRO_VENDOR_SERVICE,
+          VENDOR_FFD0: REALTEK_VENDOR_SERVICE,
+          VENDOR_UART: FITCLOUDPRO_UART_SERVICE,
+        };
+
+        const KNOWN_UUID_LABELS = {
+          '1800': 'Generic Access',
+          '1801': 'Generic Attribute',
+          '180a': 'Device Information',
+          '180d': 'Heart Rate Service',
+          '180f': 'Battery Service',
+          '1805': 'Current Time Service',
+          '1811': 'Alert Notification Service',
+          fee7: 'FitCloudPro Vendor Service',
+          ffd0: 'Realtek 8763EW / FitCloudPro Service',
+          fee0: 'Vendor Telemetry Service',
+          '2a00': 'Device Name',
+          '2a01': 'Appearance',
+          '2a04': 'Peripheral Preferred Connection Parameters',
+          '2a05': 'Service Changed',
+          '2a19': 'Battery Level',
+          '2a23': 'System ID',
+          '2a24': 'Model Number String',
+          '2a25': 'Serial Number String',
+          '2a26': 'Firmware Revision String',
+          '2a27': 'Hardware Revision String',
+          '2a28': 'Software Revision String',
+          '2a29': 'Manufacturer Name String',
+          '2a37': 'Heart Rate Measurement',
+          '2a38': 'Body Sensor Location',
+          '2a39': 'Heart Rate Control Point',
+          '2a2b': 'Current Time',
+          fec7: 'Vendor Write Channel',
+          fec8: 'Vendor Indicate Channel',
+          fec9: 'Vendor Read / MAC Info',
+          fea1: 'FitCloudPro Sync TX',
+          fea2: 'FitCloudPro Sync RX',
+          ffd1: 'Realtek Control Write',
+          ffd2: 'Realtek Telemetry Notify / Read',
+          '6e400001-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART Service (NUS)',
+          '6e400002-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART RX (Write)',
+          '6e400003-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART TX (Notify)',
+        };
+
+        const BODY_SENSOR_LOCATIONS = {
+          0: 'Other',
+          1: 'Chest',
+          2: 'Wrist',
+          3: 'Finger',
+          4: 'Hand',
+          5: 'Ear Lobe',
+          6: 'Foot',
+        };
+
+        const DEMO_DEVICE_NAME = 'Zeblaze GTR 3 Pro (Demo)';
+        const DEMO_DEVICE_INFO = {
+          manufacturer: 'Zeblaze (FitCloudPro)',
+          model: 'Zeblaze GTR 3 Pro',
+          firmwareRevision: 'v2.4.18-FitCloudPro',
+          hardwareRevision: 'Realtek 8763EW',
+          softwareRevision: '1.43" 466×466 AMOLED · FitCloudPro',
+        };
+
+        const MAX_HR_HISTORY = 36;
+        const BATTERY_SEGMENTS = 10;
+
+        // =====================================================================
+        // 2. Pure Parsing, Decoding & Formatting Helpers
+        // =====================================================================
+        function escapeHtml(value) {
+          return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function extractShortUuid(uuid) {
+          const normalized = String(uuid).trim().toLowerCase();
+          const match = normalized.match(/^0000([0-9a-f]{4})-0000-1000-8000-00805f9b34fb$/);
+          if (match) return '0x' + match[1].toUpperCase();
+          if (/^[0-9a-f]{4}$/.test(normalized)) return '0x' + normalized.toUpperCase();
+          return normalized.slice(0, 8).toUpperCase();
+        }
+
+        function resolveUuidMetadata(uuid) {
+          const normalized = String(uuid).trim().toLowerCase();
+          const match = normalized.match(/^0000([0-9a-f]{4})-0000-1000-8000-00805f9b34fb$/);
+          const key = match ? match[1] : normalized.replace(/^0x/, '');
+          return {
+            shortUuid: extractShortUuid(normalized),
+            name: KNOWN_UUID_LABELS[normalized] || KNOWN_UUID_LABELS[key] || 'Custom GATT Attribute',
+          };
+        }
+
+        function matchesShortUuid(uuid, targetHex4) {
+          const normalized = String(uuid).trim().toLowerCase();
+          const target = String(targetHex4).trim().toLowerCase().replace(/^0x/, '');
+          return (
+            normalized === target ||
+            normalized === '0x' + target ||
+            normalized === '0000' + target + '-0000-1000-8000-00805f9b34fb'
+          );
+        }
+
+        function parseHeartRateMeasurement(dataView, timestamp) {
+          if (dataView.byteLength < 2) {
+            throw new Error('Heart Rate Measurement payload too short');
+          }
+          const flags = dataView.getUint8(0);
+          const isUint16 = (flags & 0x01) !== 0;
+          const contactBits = (flags >> 1) & 0x03;
+          const hasEnergy = (flags & 0x08) !== 0;
+          const hasRr = (flags & 0x10) !== 0;
+
+          let offset = 1;
+          let bpm = 0;
+          if (isUint16) {
+            if (dataView.byteLength < 3) throw new Error('16-bit HR payload incomplete');
+            bpm = dataView.getUint16(offset, true);
+            offset += 2;
+          } else {
+            bpm = dataView.getUint8(offset);
+            offset += 1;
+          }
+          if (hasEnergy) offset += 2;
+
+          const rrIntervalsMs = [];
+          if (hasRr) {
+            while (offset + 1 < dataView.byteLength) {
+              const rawRr = dataView.getUint16(offset, true);
+              rrIntervalsMs.push(Math.round((rawRr / 1024) * 1000));
+              offset += 2;
+            }
+          }
+
+          let sensorContact = 'not-supported';
+          if (contactBits === 0x02) sensorContact = 'supported-not-detected';
+          else if (contactBits === 0x03) sensorContact = 'supported-detected';
+
+          return {
+            bpm,
+            timestamp: timestamp || Date.now(),
+            sensorContact,
+            rrIntervalsMs: rrIntervalsMs.length ? rrIntervalsMs : undefined,
+          };
+        }
+
+        function parseBatteryLevel(dataView) {
+          if (!dataView || dataView.byteLength < 1) return null;
+          return Math.max(0, Math.min(100, dataView.getUint8(0)));
+        }
+
+        function decodeUtf8String(dataView) {
+          const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, dataView.byteLength);
+          return new TextDecoder('utf-8', { fatal: false })
+            .decode(bytes)
+            .replace(/\0+$/g, '')
+            .trim();
+        }
+
+        function formatDataViewHex(dataView) {
+          const parts = [];
+          for (let i = 0; i < dataView.byteLength; i++) {
+            parts.push(dataView.getUint8(i).toString(16).toUpperCase().padStart(2, '0'));
+          }
+          return parts.join(' ');
+        }
+
+        function isLikelyPrintableAscii(bytes) {
+          if (!bytes.length) return false;
+          let printable = 0;
+          for (let i = 0; i < bytes.length; i++) {
+            const b = bytes[i];
+            if (b === 0) continue;
+            if ((b >= 32 && b <= 126) || b === 9 || b === 10 || b === 13) printable += 1;
+            else return false;
+          }
+          return printable > 0;
+        }
+
+        function decodeCharacteristicValue(uuid, dataView, readAt) {
+          const ts = readAt || Date.now();
+          const hex = formatDataViewHex(dataView);
+          const byteLength = dataView.byteLength;
+          if (byteLength === 0) {
+            return { hex: '(empty)', decoded: 'Empty payload (0 bytes)', byteLength: 0, readAt: ts };
+          }
+          if (matchesShortUuid(uuid, '2a19')) {
+            const pct = parseBatteryLevel(dataView);
+            return {
+              hex,
+              decoded: pct !== null ? pct + '% Battery' : 'Invalid battery value',
+              byteLength,
+              readAt: ts,
+            };
+          }
+          if (matchesShortUuid(uuid, '2a37') && byteLength >= 2) {
+            const hr = parseHeartRateMeasurement(dataView, ts);
+            return { hex, decoded: hr.bpm + ' BPM', byteLength, readAt: ts };
+          }
+          if (matchesShortUuid(uuid, '2a38')) {
+            const code = dataView.getUint8(0);
+            return {
+              hex,
+              decoded: BODY_SENSOR_LOCATIONS[code] || 'Location code ' + code,
+              byteLength,
+              readAt: ts,
+            };
+          }
+          if (matchesShortUuid(uuid, '2a01') && byteLength >= 2) {
+            const appearance = dataView.getUint16(0, true);
+            const label =
+              appearance === 192 || appearance === 193
+                ? 'Generic Watch / Sports Watch'
+                : 'Appearance #' + appearance;
+            return {
+              hex,
+              decoded:
+                label + ' (0x' + appearance.toString(16).toUpperCase().padStart(4, '0') + ')',
+              byteLength,
+              readAt: ts,
+            };
+          }
+          const utf8Codes = ['2a00', '2a24', '2a25', '2a26', '2a27', '2a28', '2a29'];
+          if (utf8Codes.some((c) => matchesShortUuid(uuid, c))) {
+            const text = decodeUtf8String(dataView);
+            return { hex, decoded: text ? '"' + text + '"' : '(blank string)', byteLength, readAt: ts };
+          }
+          const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, byteLength);
+          if (isLikelyPrintableAscii(bytes)) {
+            return { hex, decoded: '"' + decodeUtf8String(dataView) + '"', byteLength, readAt: ts };
+          }
+          if (byteLength === 1) {
+            return { hex, decoded: 'uint8: ' + dataView.getUint8(0), byteLength, readAt: ts };
+          }
+          if (byteLength === 2) {
+            return {
+              hex,
+              decoded: 'uint16 LE: ' + dataView.getUint16(0, true),
+              byteLength,
+              readAt: ts,
+            };
+          }
+          return { hex, decoded: byteLength + ' raw bytes', byteLength, readAt: ts };
+        }
+
+        function getHeartRateZone(bpm) {
+          if (bpm === null || bpm <= 0) return 'Standby';
+          if (bpm < 60) return 'Rest / Recovery';
+          if (bpm < 100) return 'Normal Resting';
+          if (bpm < 125) return 'Warm-Up';
+          if (bpm < 150) return 'Aerobic';
+          if (bpm < 170) return 'Threshold';
+          return 'Peak Effort';
+        }
+
+        function computeHeartRateStats(samples) {
+          if (!samples.length) {
+            return { current: null, min: null, max: null, avg: null, zone: 'Standby' };
+          }
+          let min = Infinity;
+          let max = -Infinity;
+          let sum = 0;
+          for (const s of samples) {
+            if (s.bpm < min) min = s.bpm;
+            if (s.bpm > max) max = s.bpm;
+            sum += s.bpm;
+          }
+          const current = samples[samples.length - 1].bpm;
+          return {
+            current,
+            min,
+            max,
+            avg: Math.round(sum / samples.length),
+            zone: getHeartRateZone(current),
+          };
+        }
+
+        function getBatteryStatusMeta(level) {
+          if (level === null) {
+            return { label: 'Not reading', estimatedDays: '—', tone: 'neutral' };
+          }
+          const days = Math.max(0.2, (level / 100) * 10);
+          const estimatedDays =
+            days >= 1 ? '~' + days.toFixed(1) + ' days est.' : '~' + Math.round(days * 24) + ' hrs est.';
+          if (level >= 60) return { label: 'Optimal charge', estimatedDays, tone: 'emerald' };
+          if (level >= 30) return { label: 'Moderate charge', estimatedDays, tone: 'sky' };
+          if (level >= 15) return { label: 'Low battery', estimatedDays, tone: 'amber' };
+          return { label: 'Critical — charge soon', estimatedDays, tone: 'rose' };
+        }
+
+        function generateDemoHeartRateBpm(previousBpm, stepIndex) {
+          const baseline = 74;
+          const wave = Math.sin(stepIndex * 0.42) * 5.5 + Math.cos(stepIndex * 0.17) * 3.5;
+          const blended = previousBpm * 0.55 + (baseline + wave) * 0.45;
+          return Math.max(58, Math.min(108, Math.round(blended)));
+        }
+
+        function formatClock(ts) {
+          return new Date(ts).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+        }
+
+        function formatPropertyFlags(props) {
+          const flags = [];
+          if (props.read) flags.push('READ');
+          if (props.write) flags.push('WRITE');
+          if (props.writeWithoutResponse) flags.push('WRITE_NR');
+          if (props.notify) flags.push('NOTIFY');
+          if (props.indicate) flags.push('INDICATE');
+          if (props.broadcast) flags.push('BROADCAST');
+          return flags.length ? flags.join(' · ') : 'NO FLAGS';
+        }
+
+        // =====================================================================
+        // 3. Demo Mode Dataset (Zeblaze GTR 3 Pro / Realtek 8763EW / FitCloudPro)
+        // =====================================================================
+        function encodeAscii(str) {
+          return new TextEncoder().encode(str);
+        }
+
+        function makeDemoChar(uuid, props) {
+          const meta = resolveUuidMetadata(uuid);
+          return {
+            uuid,
+            shortUuid: meta.shortUuid,
+            name: meta.name,
+            properties: {
+              broadcast: false,
+              read: Boolean(props.read),
+              writeWithoutResponse: Boolean(props.writeWithoutResponse),
+              write: Boolean(props.write),
+              notify: Boolean(props.notify),
+              indicate: Boolean(props.indicate),
+              authenticatedSignedWrites: false,
+            },
+            lastRead: null,
+            readError: null,
+            isReading: false,
+            nativeCharacteristic: null,
+          };
+        }
+
+        function createDemoGattServices() {
+          const defs = [
+            {
+              uuid: GATT_UUIDS.BATTERY_SERVICE,
+              chars: [makeDemoChar(GATT_UUIDS.BATTERY_LEVEL, { read: true, notify: true })],
+            },
+            {
+              uuid: GATT_UUIDS.HEART_RATE_SERVICE,
+              chars: [
+                makeDemoChar(GATT_UUIDS.HEART_RATE_MEASUREMENT, { notify: true }),
+                makeDemoChar(GATT_UUIDS.BODY_SENSOR_LOCATION, { read: true }),
+                makeDemoChar(GATT_UUIDS.HEART_RATE_CONTROL_POINT, { write: true }),
+              ],
+            },
+            {
+              uuid: GATT_UUIDS.DEVICE_INFORMATION,
+              chars: [
+                makeDemoChar(GATT_UUIDS.MANUFACTURER_NAME, { read: true }),
+                makeDemoChar(GATT_UUIDS.MODEL_NUMBER, { read: true }),
+                makeDemoChar(GATT_UUIDS.FIRMWARE_REVISION, { read: true }),
+                makeDemoChar(GATT_UUIDS.HARDWARE_REVISION, { read: true }),
+                makeDemoChar(GATT_UUIDS.SOFTWARE_REVISION, { read: true }),
+              ],
+            },
+            {
+              uuid: GATT_UUIDS.GENERIC_ACCESS,
+              chars: [
+                makeDemoChar(GATT_UUIDS.DEVICE_NAME, { read: true }),
+                makeDemoChar(GATT_UUIDS.APPEARANCE, { read: true }),
+              ],
+            },
+            {
+              uuid: GATT_UUIDS.VENDOR_FEE7,
+              chars: [
+                makeDemoChar('0000fec7-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
+                makeDemoChar('0000fec8-0000-1000-8000-00805f9b34fb', { indicate: true }),
+                makeDemoChar('0000fec9-0000-1000-8000-00805f9b34fb', { read: true }),
+                makeDemoChar('0000fea1-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
+                makeDemoChar('0000fea2-0000-1000-8000-00805f9b34fb', { read: true, notify: true }),
+              ],
+            },
+            {
+              uuid: GATT_UUIDS.VENDOR_FFD0,
+              chars: [
+                makeDemoChar('0000ffd1-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
+                makeDemoChar('0000ffd2-0000-1000-8000-00805f9b34fb', { read: true, notify: true }),
+              ],
+            },
+            {
+              uuid: GATT_UUIDS.VENDOR_UART,
+              chars: [
+                makeDemoChar('6e400002-b5a3-f393-e0a9-e50e24dcca9e', { write: true, writeWithoutResponse: true }),
+                makeDemoChar('6e400003-b5a3-f393-e0a9-e50e24dcca9e', { notify: true }),
+              ],
+            },
+          ];
+
+          return defs.map((def) => {
+            const meta = resolveUuidMetadata(def.uuid);
+            return {
+              uuid: def.uuid,
+              shortUuid: meta.shortUuid,
+              name: meta.name,
+              isPrimary: true,
+              characteristics: def.chars,
+            };
+          });
+        }
+
+        function getDemoCharacteristicPayload(uuid, currentBpm, currentBattery) {
+          const key = uuid.toLowerCase();
+          const map = {
+            [GATT_UUIDS.DEVICE_NAME]: encodeAscii('Zeblaze GTR 3 Pro'),
+            [GATT_UUIDS.APPEARANCE]: new Uint8Array([0xc1, 0x00]),
+            [GATT_UUIDS.MANUFACTURER_NAME]: encodeAscii(DEMO_DEVICE_INFO.manufacturer),
+            [GATT_UUIDS.MODEL_NUMBER]: encodeAscii(DEMO_DEVICE_INFO.model),
+            [GATT_UUIDS.FIRMWARE_REVISION]: encodeAscii(DEMO_DEVICE_INFO.firmwareRevision),
+            [GATT_UUIDS.HARDWARE_REVISION]: encodeAscii(DEMO_DEVICE_INFO.hardwareRevision),
+            [GATT_UUIDS.SOFTWARE_REVISION]: encodeAscii(DEMO_DEVICE_INFO.softwareRevision),
+            [GATT_UUIDS.BATTERY_LEVEL]: new Uint8Array([Math.max(0, Math.min(100, currentBattery))]),
+            [GATT_UUIDS.HEART_RATE_MEASUREMENT]: new Uint8Array([
+              0x16,
+              Math.max(40, Math.min(200, currentBpm)),
+              0x10,
+              0x03,
+            ]),
+            [GATT_UUIDS.BODY_SENSOR_LOCATION]: new Uint8Array([0x02]),
+            '0000fec9-0000-1000-8000-00805f9b34fb': new Uint8Array([0x4c, 0x93, 0x2b, 0xa1, 0x7e, 0x04]),
+            '0000fea2-0000-1000-8000-00805f9b34fb': new Uint8Array([0xab, 0x00, 0x06, 0x10, 0x24, 0x84, 0x01, 0x5c]),
+            '0000ffd2-0000-1000-8000-00805f9b34fb': encodeAscii('RTL8763EW-466x466'),
+          };
+          const bytes = map[key] || new Uint8Array([0x01, 0x00]);
+          return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        }
+
+        // =====================================================================
+        // 4. Application State & Hardware Handles
+        // =====================================================================
+        const isSecureContextEnv =
+          typeof window !== 'undefined' &&
+          (window.isSecureContext !== undefined
+            ? window.isSecureContext
+            : window.location.protocol === 'https:');
+        const isBluetoothSupported =
+          typeof navigator !== 'undefined' &&
+          typeof navigator.bluetooth !== 'undefined' &&
+          typeof navigator.bluetooth.requestDevice === 'function';
+
+        const state = {
+          activeTab: 'dashboard',
+          status: 'disconnected', // 'disconnected' | 'connecting' | 'connected'
+          isDemoMode: false,
+          deviceName: null,
+          batteryLevel: null,
+          batteryLastUpdated: null,
+          batteryExposed: null,
+          heartRateHistory: [],
+          heartRateExposed: null,
+          hoveredHrIndex: null,
+          deviceInfo: {
+            manufacturer: null,
+            model: null,
+            firmwareRevision: null,
+            hardwareRevision: null,
+            softwareRevision: null,
+          },
+          deviceInfoExposed: null,
+          services: [],
+          expandedServices: {},
+          searchQuery: '',
+          copiedUuid: null,
+          error: null,
+        };
+
+        let bluetoothDevice = null;
+        let hrCharacteristic = null;
+        let batteryCharacteristic = null;
+        let demoIntervalId = null;
+        let demoStep = 20;
+        let latestDemoBpm = 74;
+        let latestDemoBattery = 85;
+        let copyTimeoutId = null;
+
+        // =====================================================================
+        // 5. DOM Element References
+        // =====================================================================
+        const els = {
+          brandHomeLink: document.getElementById('brand-home-link'),
+          desktopTabDashboard: document.getElementById('desktop-tab-dashboard'),
+          desktopTabInspector: document.getElementById('desktop-tab-inspector'),
+          desktopServiceCount: document.getElementById('desktop-service-count'),
+          mobileTabDashboard: document.getElementById('mobile-tab-dashboard'),
+          mobileTabInspector: document.getElementById('mobile-tab-inspector'),
+          mobileInspectorLabel: document.getElementById('mobile-inspector-label'),
+          topbarActionBtn: document.getElementById('topbar-action-btn'),
+          browserNotice: document.getElementById('browser-support-notice'),
+          browserNoticeTitle: document.getElementById('browser-notice-title'),
+          browserNoticeBody: document.getElementById('browser-notice-body'),
+          noticeDemoBtn: document.getElementById('notice-demo-btn'),
+          connectionDot: document.getElementById('connection-dot'),
+          connectionStatusLabel: document.getElementById('connection-status-label'),
+          deviceTitleHeading: document.getElementById('device-title-heading'),
+          deviceSubtitleText: document.getElementById('device-subtitle-text'),
+          demoSwitch: document.getElementById('demo-mode-switch'),
+          demoThumb: document.getElementById('demo-mode-thumb'),
+          heroConnectBtn: document.getElementById('hero-connect-btn'),
+          errorBanner: document.getElementById('bluetooth-error-banner'),
+          errorTitle: document.getElementById('bluetooth-error-title'),
+          errorMessage: document.getElementById('bluetooth-error-message'),
+          dismissErrorBtn: document.getElementById('dismiss-error-btn'),
+          viewDashboard: document.getElementById('view-dashboard'),
+          viewInspector: document.getElementById('view-inspector'),
+          hrBpmValue: document.getElementById('hr-bpm-value'),
+          hrZoneLabel: document.getElementById('hr-zone-label'),
+          hrStreamStatus: document.getElementById('hr-stream-status'),
+          hrChartStage: document.getElementById('hr-chart-stage'),
+          hrStatMin: document.getElementById('hr-stat-min'),
+          hrStatAvg: document.getElementById('hr-stat-avg'),
+          hrStatMax: document.getElementById('hr-stat-max'),
+          batteryRefreshBtn: document.getElementById('battery-refresh-btn'),
+          batteryLevelValue: document.getElementById('battery-level-value'),
+          batteryStatusText: document.getElementById('battery-status-text'),
+          batteryEstimateText: document.getElementById('battery-estimate-text'),
+          batteryBarSegments: document.getElementById('battery-bar-segments'),
+          batteryFooterNote: document.getElementById('battery-footer-note'),
+          deviceInfoInspectBtn: document.getElementById('device-info-inspect-btn'),
+          deviceInfoRows: document.getElementById('device-info-rows'),
+          deviceInfoFooter: document.getElementById('device-info-footer'),
+          inspectorEmptyState: document.getElementById('inspector-empty-state'),
+          inspectorConnectedShell: document.getElementById('inspector-connected-shell'),
+          inspectorConnectBtn: document.getElementById('inspector-connect-btn'),
+          inspectorDemoBtn: document.getElementById('inspector-demo-btn'),
+          inspectorSummaryMeta: document.getElementById('inspector-summary-meta'),
+          gattSearchInput: document.getElementById('gatt-search'),
+          inspectorToggleAllBtn: document.getElementById('inspector-toggle-all-btn'),
+          gattServicesContainer: document.getElementById('gatt-services-container'),
+        };
+
+        // =====================================================================
+        // 6. Bluetooth & Demo Mode Lifecycle
+        // =====================================================================
+        function stopDemoTimers() {
+          if (demoIntervalId !== null) {
+            window.clearInterval(demoIntervalId);
+            demoIntervalId = null;
+          }
+        }
+
+        function onHeartRateNotification(event) {
+          const target = event.target;
+          if (!target || !target.value) return;
+          try {
+            const sample = parseHeartRateMeasurement(target.value);
+            latestDemoBpm = sample.bpm;
+            state.heartRateHistory = state.heartRateHistory.slice(-(MAX_HR_HISTORY - 1)).concat(sample);
+            renderHeartRateCard();
+          } catch (_) {
+            // Ignore malformed notification frame
+          }
+        }
+
+        function onBatteryNotification(event) {
+          const target = event.target;
+          if (!target || !target.value) return;
+          const pct = parseBatteryLevel(target.value);
+          if (pct !== null) {
+            latestDemoBattery = pct;
+            state.batteryLevel = pct;
+            state.batteryLastUpdated = Date.now();
+            renderBatteryCard();
+          }
+        }
+
+        function cleanupHardwareConnection() {
+          if (hrCharacteristic) {
+            hrCharacteristic.removeEventListener('characteristicvaluechanged', onHeartRateNotification);
+            hrCharacteristic.stopNotifications().catch(() => {});
+            hrCharacteristic = null;
+          }
+          if (batteryCharacteristic) {
+            batteryCharacteristic.removeEventListener('characteristicvaluechanged', onBatteryNotification);
+            batteryCharacteristic.stopNotifications().catch(() => {});
+            batteryCharacteristic = null;
+          }
+          if (bluetoothDevice) {
+            if (bluetoothDevice.gatt && bluetoothDevice.gatt.connected) {
+              bluetoothDevice.gatt.disconnect();
+            }
+            bluetoothDevice = null;
+          }
+        }
+
+        function resetTelemetryState() {
+          state.status = 'disconnected';
+          state.deviceName = null;
+          state.batteryLevel = null;
+          state.batteryLastUpdated = null;
+          state.batteryExposed = null;
+          state.heartRateHistory = [];
+          state.heartRateExposed = null;
+          state.hoveredHrIndex = null;
+          state.deviceInfo = {
+            manufacturer: null,
+            model: null,
+            firmwareRevision: null,
+            hardwareRevision: null,
+            softwareRevision: null,
+          };
+          state.deviceInfoExposed = null;
+          state.services = [];
+          state.expandedServices = {};
+        }
+
+        function disconnectWatch() {
+          stopDemoTimers();
+          cleanupHardwareConnection();
+          state.isDemoMode = false;
+          state.error = null;
+          resetTelemetryState();
+          renderAll();
+        }
+
+        function buildInitialDemoHistory() {
+          const now = Date.now();
+          const list = [];
+          let bpm = 71;
+          for (let i = 0; i < 20; i++) {
+            bpm = generateDemoHeartRateBpm(bpm, i);
+            list.push({
+              bpm,
+              timestamp: now - (20 - i) * 1200,
+              sensorContact: 'supported-detected',
+              rrIntervalsMs: [Math.round(60000 / bpm)],
+            });
+          }
+          return list;
+        }
+
+        function startDemoMode() {
+          cleanupHardwareConnection();
+          stopDemoTimers();
+          state.error = null;
+          state.isDemoMode = true;
+          state.status = 'connected';
+          state.deviceName = DEMO_DEVICE_NAME;
+
+          const initialHistory = buildInitialDemoHistory();
+          latestDemoBpm = initialHistory[initialHistory.length - 1].bpm;
+          latestDemoBattery = 85;
+          demoStep = initialHistory.length;
+
+          state.heartRateHistory = initialHistory;
+          state.heartRateExposed = true;
+          state.hoveredHrIndex = null;
+          state.batteryLevel = 85;
+          state.batteryLastUpdated = Date.now();
+          state.batteryExposed = true;
+          state.deviceInfo = Object.assign({}, DEMO_DEVICE_INFO);
+          state.deviceInfoExposed = true;
+          state.services = createDemoGattServices();
+          state.expandedServices = {};
+
+          renderAll();
+
+          demoIntervalId = window.setInterval(function () {
+            demoStep += 1;
+            latestDemoBpm = generateDemoHeartRateBpm(latestDemoBpm, demoStep);
+            const nextSample = {
+              bpm: latestDemoBpm,
+              timestamp: Date.now(),
+              sensorContact: 'supported-detected',
+              rrIntervalsMs: [Math.round(60000 / latestDemoBpm)],
+            };
+            state.heartRateHistory = state.heartRateHistory.slice(-(MAX_HR_HISTORY - 1)).concat(nextSample);
+            if (state.activeTab === 'dashboard') {
+              renderHeartRateCard();
+            }
+
+            if (demoStep % 38 === 0 && latestDemoBattery > 18) {
+              latestDemoBattery -= 1;
+              state.batteryLevel = latestDemoBattery;
+              state.batteryLastUpdated = Date.now();
+              if (state.activeTab === 'dashboard') {
+                renderBatteryCard();
+              }
+            }
+          }, 1200);
+        }
+
+        function toggleDemoMode(forceValue) {
+          const target = typeof forceValue === 'boolean' ? forceValue : !state.isDemoMode;
+          if (target) startDemoMode();
+          else disconnectWatch();
+        }
+
+        async function connectWatch() {
+          if (!isBluetoothSupported) {
+            state.error = {
+              title: 'Web Bluetooth unavailable',
+              message:
+                'This browser does not expose the Web Bluetooth API. Open this app in Chrome on Android or Windows over HTTPS, or enable Demo Mode to preview the interface.',
+            };
+            renderConnectionPanel();
+            return;
+          }
+
+          stopDemoTimers();
+          cleanupHardwareConnection();
+          state.isDemoMode = false;
+          state.error = null;
+          state.status = 'connecting';
+          renderAll();
+
+          try {
+            const device = await navigator.bluetooth.requestDevice({
+              acceptAllDevices: true,
+              optionalServices: OPTIONAL_BLUETOOTH_SERVICES,
+            });
+
+            bluetoothDevice = device;
+            state.deviceName = device.name || 'Unnamed Bluetooth Watch';
+
+            device.addEventListener(
+              'gattserverdisconnected',
+              function () {
+                cleanupHardwareConnection();
+                state.status = 'disconnected';
+                state.error = {
+                  title: 'Watch disconnected',
+                  message:
+                    (device.name || 'Your watch') +
+                    ' ended the Bluetooth GATT session. Keep the watch awake and nearby to reconnect.',
+                };
+                renderAll();
+              },
+              { once: true }
+            );
+
+            if (!device.gatt) {
+              throw new Error('Selected device does not expose a GATT server.');
+            }
+
+            const server = await device.gatt.connect();
+            state.status = 'connected';
+            renderHeaderAndNav();
+            renderConnectionPanel();
+
+            let primaryServices = [];
+            try {
+              primaryServices = await server.getPrimaryServices();
+            } catch (_) {
+              primaryServices = [];
+            }
+
+            const discovered = [];
+            let foundBattery = false;
+            let foundHeartRate = false;
+            let foundDeviceInfo = false;
+            const nextInfo = {
+              manufacturer: null,
+              model: null,
+              firmwareRevision: null,
+              hardwareRevision: null,
+              softwareRevision: null,
+            };
+
+            for (const svc of primaryServices) {
+              const svcMeta = resolveUuidMetadata(svc.uuid);
+              let rawChars = [];
+              try {
+                rawChars = await svc.getCharacteristics();
+              } catch (_) {
+                rawChars = [];
+              }
+
+              const mappedChars = rawChars.map(function (ch) {
+                const chMeta = resolveUuidMetadata(ch.uuid);
+                return {
+                  uuid: ch.uuid,
+                  shortUuid: chMeta.shortUuid,
+                  name: chMeta.name,
+                  properties: {
+                    broadcast: Boolean(ch.properties.broadcast),
+                    read: Boolean(ch.properties.read),
+                    writeWithoutResponse: Boolean(ch.properties.writeWithoutResponse),
+                    write: Boolean(ch.properties.write),
+                    notify: Boolean(ch.properties.notify),
+                    indicate: Boolean(ch.properties.indicate),
+                    authenticatedSignedWrites: Boolean(ch.properties.authenticatedSignedWrites),
+                  },
+                  lastRead: null,
+                  readError: null,
+                  isReading: false,
+                  nativeCharacteristic: ch,
+                };
+              });
+
+              discovered.push({
+                uuid: svc.uuid,
+                shortUuid: svcMeta.shortUuid,
+                name: svcMeta.name,
+                isPrimary: svc.isPrimary,
+                characteristics: mappedChars,
+              });
+
+              // Battery Service (0x180F -> 0x2A19)
+              if (matchesShortUuid(svc.uuid, '180f')) {
+                const battChar = rawChars.find((c) => matchesShortUuid(c.uuid, '2a19'));
+                if (battChar) {
+                  foundBattery = true;
+                  batteryCharacteristic = battChar;
+                  if (battChar.properties.read) {
+                    try {
+                      const val = await battChar.readValue();
+                      const pct = parseBatteryLevel(val);
+                      if (pct !== null) {
+                        latestDemoBattery = pct;
+                        state.batteryLevel = pct;
+                        state.batteryLastUpdated = Date.now();
+                      }
+                    } catch (_) {}
+                  }
+                  if (battChar.properties.notify) {
+                    try {
+                      await battChar.startNotifications();
+                      battChar.addEventListener('characteristicvaluechanged', onBatteryNotification);
+                    } catch (_) {}
+                  }
+                }
+              }
+
+              // Heart Rate Service (0x180D -> 0x2A37)
+              if (matchesShortUuid(svc.uuid, '180d')) {
+                const hrChar = rawChars.find((c) => matchesShortUuid(c.uuid, '2a37'));
+                if (hrChar) {
+                  foundHeartRate = true;
+                  hrCharacteristic = hrChar;
+                  if (hrChar.properties.notify) {
+                    try {
+                      await hrChar.startNotifications();
+                      hrChar.addEventListener('characteristicvaluechanged', onHeartRateNotification);
+                    } catch (_) {}
+                  }
+                }
+              }
+
+              // Device Information Service (0x180A)
+              if (matchesShortUuid(svc.uuid, '180a')) {
+                foundDeviceInfo = true;
+                const readText = async function (code) {
+                  const target = rawChars.find((c) => matchesShortUuid(c.uuid, code));
+                  if (!target || !target.properties.read) return null;
+                  try {
+                    const val = await target.readValue();
+                    const text = decodeUtf8String(val);
+                    return text.length ? text : null;
+                  } catch (_) {
+                    return null;
+                  }
+                };
+                nextInfo.manufacturer = await readText('2a29');
+                nextInfo.model = await readText('2a24');
+                nextInfo.firmwareRevision = await readText('2a26');
+                nextInfo.hardwareRevision = await readText('2a27');
+                nextInfo.softwareRevision = await readText('2a28');
+              }
+            }
+
+            state.batteryExposed = foundBattery;
+            state.heartRateExposed = foundHeartRate;
+            state.deviceInfo = nextInfo;
+            state.deviceInfoExposed = foundDeviceInfo;
+            state.services = discovered;
+            state.expandedServices = {};
+            renderAll();
+          } catch (err) {
+            cleanupHardwareConnection();
+            state.status = 'disconnected';
+            if (err && err.name === 'NotFoundError') {
+              state.error = null;
+            } else {
+              state.error = {
+                title: 'Bluetooth connection failed',
+                message:
+                  (err && err.message) ||
+                  'Could not establish a GATT connection to the selected watch. Ensure Bluetooth is enabled and the Zeblaze GTR 3 Pro is not exclusively bound to the FitCloudPro mobile app.',
+              };
+            }
+            renderAll();
+          }
+        }
+
+        async function refreshBattery() {
+          if (state.isDemoMode) {
+            state.batteryLastUpdated = Date.now();
+            renderBatteryCard();
+            return;
+          }
+          if (!batteryCharacteristic || !batteryCharacteristic.properties.read) return;
+          try {
+            const val = await batteryCharacteristic.readValue();
+            const pct = parseBatteryLevel(val);
+            if (pct !== null) {
+              state.batteryLevel = pct;
+              state.batteryLastUpdated = Date.now();
+              renderBatteryCard();
+            }
+          } catch (err) {
+            state.error = {
+              title: 'Battery read failed',
+              message: (err && err.message) || 'Unable to read Battery Level characteristic.',
+            };
+            renderConnectionPanel();
+          }
+        }
+
+        async function readCharacteristic(serviceUuid, charUuid) {
+          const service = state.services.find((s) => s.uuid === serviceUuid);
+          const ch = service && service.characteristics.find((c) => c.uuid === charUuid);
+          if (!ch) return;
+
+          ch.isReading = true;
+          ch.readError = null;
+          renderInspectorServicesList();
+
+          try {
+            let dataView;
+            if (state.isDemoMode) {
+              await new Promise((resolve) => window.setTimeout(resolve, 140));
+              dataView = getDemoCharacteristicPayload(charUuid, latestDemoBpm, latestDemoBattery);
+            } else {
+              if (!ch.nativeCharacteristic) {
+                throw new Error('Characteristic handle unavailable. Reconnect watch and try again.');
+              }
+              dataView = await ch.nativeCharacteristic.readValue();
+            }
+            ch.lastRead = decodeCharacteristicValue(charUuid, dataView);
+            ch.readError = null;
+          } catch (err) {
+            ch.readError = (err && err.message) || 'Read rejected by peripheral.';
+          } finally {
+            ch.isReading = false;
+            renderInspectorServicesList();
+          }
+        }
+
+        // =====================================================================
+        // 7. Rendering Functions
+        // =====================================================================
+        function setActiveTab(tab) {
+          state.activeTab = tab;
+          renderHeaderAndNav();
+          renderActiveViewVisibility();
+          if (tab === 'inspector') {
+            renderInspector();
+          } else {
+            renderDashboard();
+          }
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function renderBrowserNotice() {
+          if (isBluetoothSupported && isSecureContextEnv) {
+            els.browserNotice.classList.add('hidden');
+            els.browserNotice.classList.remove('flex');
+            return;
+          }
+          els.browserNotice.classList.remove('hidden');
+          els.browserNotice.classList.add('flex');
+
+          if (!isSecureContextEnv) {
+            els.browserNoticeTitle.textContent = 'HTTPS Required for Web Bluetooth';
+            els.browserNoticeBody.textContent =
+              'Web Bluetooth only runs in secure HTTPS contexts. Reload this page over HTTPS in Chrome on Android or Windows to pair your Zeblaze GTR 3 Pro (FitCloudPro).';
+          } else {
+            els.browserNoticeTitle.textContent = 'Web Bluetooth Not Supported in This Browser';
+            els.browserNoticeBody.textContent =
+              'To connect directly to your Zeblaze GTR 3 Pro (FitCloudPro), open this app in Google Chrome on Android or Windows over HTTPS. iOS Safari and Firefox do not expose Web Bluetooth.';
+          }
+
+          els.noticeDemoBtn.classList.toggle('hidden', state.isDemoMode);
+          els.noticeDemoBtn.classList.toggle('inline-flex', !state.isDemoMode);
+        }
+
+        function renderHeaderAndNav() {
+          const isDash = state.activeTab === 'dashboard';
+          const count = state.services.length;
+
+          // Desktop tabs
+          els.desktopTabDashboard.setAttribute('aria-selected', String(isDash));
+          els.desktopTabDashboard.className =
+            'relative shrink-0 whitespace-nowrap py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400 ' +
+            (isDash ? 'text-sky-400' : 'text-slate-400 hover:text-slate-200');
+          document
+            .querySelector('[data-tab-indicator="dashboard"]')
+            .classList.toggle('hidden', !isDash);
+
+          els.desktopTabInspector.setAttribute('aria-selected', String(!isDash));
+          els.desktopTabInspector.className =
+            'relative shrink-0 whitespace-nowrap py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400 ' +
+            (!isDash ? 'text-sky-400' : 'text-slate-400 hover:text-slate-200');
+          document
+            .querySelector('[data-tab-indicator="inspector"]')
+            .classList.toggle('hidden', isDash);
+
+          if (count > 0) {
+            els.desktopServiceCount.textContent = '(' + count + ')';
+            els.desktopServiceCount.classList.remove('hidden');
+            els.mobileInspectorLabel.textContent = 'Watch Inspector (' + count + ')';
+          } else {
+            els.desktopServiceCount.classList.add('hidden');
+            els.mobileInspectorLabel.textContent = 'Watch Inspector';
+          }
+
+          // Mobile tabs
+          els.mobileTabDashboard.setAttribute('aria-selected', String(isDash));
+          els.mobileTabDashboard.className =
+            'flex min-h-[48px] flex-col items-center justify-center gap-0.5 whitespace-nowrap text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ' +
+            (isDash ? 'text-sky-400' : 'text-slate-400 hover:text-slate-200');
+
+          els.mobileTabInspector.setAttribute('aria-selected', String(!isDash));
+          els.mobileTabInspector.className =
+            'flex min-h-[48px] flex-col items-center justify-center gap-0.5 whitespace-nowrap text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ' +
+            (!isDash ? 'text-sky-400' : 'text-slate-400 hover:text-slate-200');
+
+          // Top bar CTA button
+          const isConnected = state.status === 'connected';
+          const isConnecting = state.status === 'connecting';
+          els.topbarActionBtn.disabled = isConnecting;
+
+          if (isConnected) {
+            els.topbarActionBtn.className =
+              'inline-flex min-h-[40px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-200 transition-colors hover:border-slate-600 hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 sm:text-sm';
+            els.topbarActionBtn.innerHTML =
+              '<svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/></svg>' +
+              '<span>Disconnect</span>';
+          } else {
+            els.topbarActionBtn.className =
+              'inline-flex min-h-[40px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-sky-500 px-3.5 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-sky-400 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 sm:text-sm';
+            els.topbarActionBtn.innerHTML =
+              '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>' +
+              '<span>' +
+              (isConnecting ? 'Connecting...' : 'Connect Watch') +
+              '</span>';
+          }
+        }
+
+        function renderConnectionPanel() {
+          const isConnected = state.status === 'connected';
+          const isConnecting = state.status === 'connecting';
+
+          // Status dot & label
+          if (isConnected) {
+            els.connectionDot.className = 'h-2 w-2 shrink-0 rounded-full bg-emerald-400';
+            els.connectionStatusLabel.className = 'text-emerald-400';
+            els.connectionStatusLabel.textContent = state.isDemoMode
+              ? 'Connected · Demo Simulation'
+              : 'Connected · BLE GATT';
+          } else if (isConnecting) {
+            els.connectionDot.className = 'h-2 w-2 shrink-0 rounded-full bg-sky-400 animate-pulse';
+            els.connectionStatusLabel.className = 'text-sky-400';
+            els.connectionStatusLabel.textContent = 'Connecting to Watch...';
+          } else {
+            els.connectionDot.className = 'h-2 w-2 shrink-0 rounded-full bg-slate-600';
+            els.connectionStatusLabel.className = 'text-slate-400';
+            els.connectionStatusLabel.textContent = 'Disconnected';
+          }
+
+          els.deviceTitleHeading.textContent = state.deviceName || 'Zeblaze GTR 3 Pro (FitCloudPro)';
+
+          if (isConnected) {
+            const count = state.services.length;
+            els.deviceSubtitleText.innerHTML =
+              '<span class="font-mono text-xs tabular-nums text-slate-400">' +
+              count +
+              ' GATT ' +
+              (count === 1 ? 'service' : 'services') +
+              ' discovered · Standard + 0xFEE7 · 0xFFD0 · NUS</span>';
+          } else {
+            els.deviceSubtitleText.textContent =
+              '1.43" 466×466 AMOLED · Realtek 8763EW · Pair over Web Bluetooth to stream telemetry.';
+          }
+
+          // Demo Mode switch
+          els.demoSwitch.setAttribute('aria-checked', String(state.isDemoMode));
+          els.demoSwitch.className =
+            'relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ' +
+            (state.isDemoMode
+              ? 'border-emerald-400/60 bg-emerald-500'
+              : 'border-slate-700 bg-slate-800');
+          els.demoThumb.className =
+            'inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ' +
+            (state.isDemoMode ? 'translate-x-6' : 'translate-x-1');
+
+          // Hero CTA button
+          els.heroConnectBtn.disabled = isConnecting;
+          if (isConnected) {
+            els.heroConnectBtn.className =
+              'inline-flex min-h-[48px] w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors hover:border-rose-500/40 hover:bg-rose-950/30 hover:text-rose-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 lg:w-auto';
+            els.heroConnectBtn.innerHTML =
+              '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/></svg>' +
+              '<span>Disconnect Watch</span>';
+          } else {
+            els.heroConnectBtn.className =
+              'inline-flex min-h-[48px] w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-sky-400 disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 lg:w-auto';
+            const iconSvg = isConnecting
+              ? '<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'
+              : '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>';
+            els.heroConnectBtn.innerHTML =
+              iconSvg +
+              '<span>' +
+              (isConnecting ? 'Searching for GTR 3 Pro...' : 'Connect GTR 3 Pro') +
+              '</span>';
+          }
+
+          // Error banner
+          if (state.error) {
+            els.errorTitle.textContent = state.error.title;
+            els.errorMessage.textContent = state.error.message;
+            els.errorBanner.classList.remove('hidden');
+            els.errorBanner.classList.add('flex');
+          } else {
+            els.errorBanner.classList.add('hidden');
+            els.errorBanner.classList.remove('flex');
+          }
+        }
+
+        function renderHeartRateCard() {
+          const samples = state.heartRateHistory;
+          const stats = computeHeartRateStats(samples);
+          const isConnected = state.status === 'connected';
+          const hasSamples = samples.length > 0;
+          const latest = hasSamples ? samples[samples.length - 1] : null;
+
+          els.hrBpmValue.textContent = stats.current !== null ? String(stats.current) : '—';
+          els.hrZoneLabel.textContent = stats.zone;
+
+          if (isConnected && hasSamples) {
+            els.hrStreamStatus.textContent = state.isDemoMode
+              ? '1.2s simulated stream'
+              : latest.sensorContact === 'supported-detected'
+                ? 'Skin contact detected'
+                : 'Notify stream active';
+          } else if (isConnected && state.heartRateExposed === false) {
+            els.hrStreamStatus.textContent = 'Service 0x180D absent';
+          } else {
+            els.hrStreamStatus.textContent = 'Awaiting watch stream';
+          }
+
+          els.hrStatMin.textContent = stats.min !== null ? stats.min + ' BPM' : '—';
+          els.hrStatAvg.textContent = stats.avg !== null ? stats.avg + ' BPM' : '—';
+          els.hrStatMax.textContent = stats.max !== null ? stats.max + ' BPM' : '—';
+
+          if (!hasSamples) {
+            const title = isConnected
+              ? state.heartRateExposed === false
+                ? 'Heart Rate Service (0x180D) not exposed'
+                : 'Waiting for first 0x2A37 notification'
+              : 'No live heart rate stream';
+            const desc = isConnected
+              ? state.heartRateExposed === false
+                ? 'Check the Watch Inspector tab to explore FitCloudPro 0xFEE7, 0xFFD0, and UART characteristics.'
+                : 'Open the Heart Rate app on your Zeblaze GTR 3 Pro to begin broadcasting BPM frames.'
+              : 'Connect your Zeblaze GTR 3 Pro or enable Demo Mode to view the real-time sparkline.';
+
+            els.hrChartStage.innerHTML =
+              '<div class="flex h-44 flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-[#080C15]/70 px-4 text-center">' +
+              '<svg class="mb-2.5 h-6 w-6 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>' +
+              '<p class="text-sm font-medium text-slate-300">' +
+              escapeHtml(title) +
+              '</p>' +
+              '<p class="mt-1 max-w-sm text-xs text-slate-500">' +
+              escapeHtml(desc) +
+              '</p>' +
+              '</div>';
+            return;
+          }
+
+          // Build crisp real-time SVG sparkline
+          const chartW = 560;
+          const chartH = 160;
+          const padX = 12;
+          const padY = 18;
+          const bpms = samples.map((s) => s.bpm);
+          const rawMin = Math.min.apply(null, bpms);
+          const rawMax = Math.max.apply(null, bpms);
+          const pad = Math.max(6, Math.round((rawMax - rawMin) * 0.25));
+          const yMin = Math.max(40, rawMin - pad);
+          const yMax = Math.min(210, rawMax + pad);
+          const span = Math.max(12, yMax - yMin);
+          const usableW = chartW - padX * 2;
+          const usableH = chartH - padY * 2;
+
+          const points = samples.map(function (sample, idx) {
+            const ratioX = samples.length === 1 ? 1 : idx / (samples.length - 1);
+            const x = padX + ratioX * usableW;
+            const ratioY = (sample.bpm - yMin) / span;
+            const y = chartH - padY - ratioY * usableH;
+            return { x, y, sample };
+          });
+
+          const linePath = points
+            .map((pt, i) => (i === 0 ? 'M ' : 'L ') + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1))
+            .join(' ');
+          const baseY = chartH - padY;
+          const areaPath =
+            points.length > 1
+              ? linePath +
+                ' L ' +
+                points[points.length - 1].x.toFixed(1) +
+                ' ' +
+                baseY +
+                ' L ' +
+                points[0].x.toFixed(1) +
+                ' ' +
+                baseY +
+                ' Z'
+              : '';
+
+          const hoverIdx =
+            state.hoveredHrIndex !== null && points[state.hoveredHrIndex]
+              ? state.hoveredHrIndex
+              : null;
+          const activePt = hoverIdx !== null ? points[hoverIdx] : points[points.length - 1];
+
+          const gridLines = [0.2, 0.5, 0.8]
+            .map(function (ratio) {
+              const y = (padY + ratio * usableH).toFixed(1);
+              return (
+                '<line x1="' +
+                padX +
+                '" y1="' +
+                y +
+                '" x2="' +
+                (chartW - padX) +
+                '" y2="' +
+                y +
+                '" stroke="#1E293B" stroke-width="1" stroke-dasharray="3 4" />'
+              );
+            })
+            .join('');
+
+          const colW = points.length > 1 ? Math.max(12, usableW / (points.length - 1)) : chartW;
+          const hitColumns = points
+            .map(function (pt, idx) {
+              return (
+                '<rect data-hr-idx="' +
+                idx +
+                '" x="' +
+                (pt.x - colW / 2).toFixed(1) +
+                '" y="0" width="' +
+                colW.toFixed(1) +
+                '" height="' +
+                chartH +
+                '" fill="transparent" class="cursor-crosshair" />'
+              );
+            })
+            .join('');
+
+          const readoutText =
+            hoverIdx !== null
+              ? 'Sample: ' + activePt.sample.bpm + ' BPM at ' + formatClock(activePt.sample.timestamp)
+              : 'Last reading: ' + formatClock(latest.timestamp);
+
+          els.hrChartStage.innerHTML =
+            '<div class="relative">' +
+            '<div class="mb-2 flex items-center justify-between font-mono text-xs tabular-nums text-slate-400">' +
+            '<span>' +
+            escapeHtml(readoutText) +
+            '</span>' +
+            '<span class="text-slate-500">Range ' +
+            yMin +
+            '–' +
+            yMax +
+            ' BPM</span>' +
+            '</div>' +
+            '<div id="hr-sparkline-box" data-testid="heart-rate-sparkline" class="overflow-hidden rounded-xl border border-slate-800/80 bg-[#080C15] p-2">' +
+            '<svg viewBox="0 0 ' +
+            chartW +
+            ' ' +
+            chartH +
+            '" class="h-40 w-full select-none" role="img" aria-label="Live heart rate sparkline showing ' +
+            (stats.current || 0) +
+            ' beats per minute">' +
+            '<defs><linearGradient id="hrAreaGrad" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0%" stop-color="#10B981" stop-opacity="0.28" />' +
+            '<stop offset="100%" stop-color="#10B981" stop-opacity="0.0" />' +
+            '</linearGradient></defs>' +
+            gridLines +
+            (areaPath ? '<path d="' + areaPath + '" fill="url(#hrAreaGrad)" />' : '') +
+            '<path d="' +
+            linePath +
+            '" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />' +
+            (hoverIdx !== null
+              ? '<line x1="' +
+                activePt.x.toFixed(1) +
+                '" y1="' +
+                padY +
+                '" x2="' +
+                activePt.x.toFixed(1) +
+                '" y2="' +
+                (chartH - padY) +
+                '" stroke="#38BDF8" stroke-opacity="0.45" stroke-width="1" />'
+              : '') +
+            '<circle cx="' +
+            activePt.x.toFixed(1) +
+            '" cy="' +
+            activePt.y.toFixed(1) +
+            '" r="6" fill="#10B981" fill-opacity="0.25" />' +
+            '<circle cx="' +
+            activePt.x.toFixed(1) +
+            '" cy="' +
+            activePt.y.toFixed(1) +
+            '" r="3.2" fill="#34D399" stroke="#06090F" stroke-width="1.5" />' +
+            hitColumns +
+            '</svg>' +
+            '</div>' +
+            '</div>';
+        }
+
+        function renderBatteryCard() {
+          const isConnected = state.status === 'connected';
+          const level = state.batteryLevel;
+          const meta = getBatteryStatusMeta(level);
+          const filled = level !== null ? Math.round((level / 100) * BATTERY_SEGMENTS) : 0;
+
+          const barToneMap = {
+            emerald: 'bg-emerald-400',
+            sky: 'bg-sky-400',
+            amber: 'bg-amber-400',
+            rose: 'bg-rose-500',
+            neutral: 'bg-slate-800',
+          };
+          const textToneMap = {
+            emerald: 'text-emerald-400',
+            sky: 'text-sky-400',
+            amber: 'text-amber-400',
+            rose: 'text-rose-400',
+            neutral: 'text-slate-400',
+          };
+
+          const showRefresh = isConnected && state.batteryExposed !== false;
+          els.batteryRefreshBtn.classList.toggle('hidden', !showRefresh);
+          els.batteryRefreshBtn.classList.toggle('inline-flex', showRefresh);
+
+          els.batteryLevelValue.textContent = level !== null ? String(level) : '—';
+          els.batteryStatusText.className = 'text-xs font-medium ' + textToneMap[meta.tone];
+          els.batteryStatusText.textContent =
+            isConnected && state.batteryExposed === false ? 'Not exposed' : meta.label;
+          els.batteryEstimateText.textContent = meta.estimatedDays;
+
+          let segmentsHtml = '';
+          for (let i = 0; i < BATTERY_SEGMENTS; i++) {
+            segmentsHtml +=
+              '<div class="h-6 rounded-sm transition-colors duration-200 ' +
+              (i < filled ? barToneMap[meta.tone] : 'bg-slate-800/70') +
+              '"></div>';
+          }
+          els.batteryBarSegments.innerHTML = segmentsHtml;
+
+          if (isConnected) {
+            if (state.batteryExposed === false) {
+              els.batteryFooterNote.innerHTML =
+                '<span>Standard 0x180F was not returned. Inspect 0xFEE7 or 0xFFD0 in Watch Inspector for proprietary battery frames.</span>';
+            } else {
+              const updatedText = state.batteryLastUpdated
+                ? formatClock(state.batteryLastUpdated)
+                : 'just now';
+              els.batteryFooterNote.innerHTML =
+                '<span class="font-mono tabular-nums text-slate-400">Char 0x2A19 · Updated ' +
+                escapeHtml(updatedText) +
+                '</span>';
+            }
+          } else {
+            els.batteryFooterNote.textContent =
+              'Reads standard Battery Service (0x180F) upon connection.';
+          }
+        }
+
+        function renderDeviceInfoCard() {
+          const isConnected = state.status === 'connected';
+          const info = state.deviceInfo;
+
+          if (isConnected) {
+            els.deviceInfoInspectBtn.textContent = 'Inspect GATT (' + state.services.length + ')';
+            els.deviceInfoInspectBtn.classList.remove('hidden');
+          } else {
+            els.deviceInfoInspectBtn.classList.add('hidden');
+          }
+
+          const rows = [
+            { label: 'Manufacturer', uuid: '0x2A29', value: info.manufacturer },
+            { label: 'Model', uuid: '0x2A24', value: info.model },
+            { label: 'Firmware Revision', uuid: '0x2A26', value: info.firmwareRevision },
+          ];
+          if (info.hardwareRevision) {
+            rows.push({ label: 'Chipset', uuid: '0x2A27', value: info.hardwareRevision });
+          }
+          if (info.softwareRevision) {
+            rows.push({ label: 'Display / Protocol', uuid: '0x2A28', value: info.softwareRevision });
+          }
+
+          els.deviceInfoRows.innerHTML = rows
+            .map(function (row) {
+              const val = row.value
+                ? row.value
+                : isConnected
+                  ? state.deviceInfoExposed === false
+                    ? 'Not exposed'
+                    : 'Unavailable'
+                  : '—';
+              return (
+                '<div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5 first:pt-1 last:pb-1">' +
+                '<dt class="shrink-0">' +
+                '<div class="text-xs font-medium text-slate-400">' +
+                escapeHtml(row.label) +
+                '</div>' +
+                '<div class="font-mono text-[11px] text-slate-500">' +
+                escapeHtml(row.uuid) +
+                '</div>' +
+                '</dt>' +
+                '<dd class="text-right font-mono text-xs font-medium sm:text-sm ' +
+                (row.value ? 'text-slate-100' : 'text-slate-500') +
+                '">' +
+                escapeHtml(val) +
+                '</dd>' +
+                '</div>'
+              );
+            })
+            .join('');
+
+          if (isConnected) {
+            els.deviceInfoFooter.textContent =
+              state.deviceInfoExposed === false
+                ? 'Device Information (0x180A) was omitted by this watch firmware.'
+                : 'Standard GATT Device Information fields synced from peripheral.';
+          } else {
+            els.deviceInfoFooter.textContent =
+              'Reads Manufacturer, Model, and Firmware Revision from 0x180A.';
+          }
+        }
+
+        function isServiceExpanded(uuid) {
+          return state.expandedServices[uuid] !== undefined ? state.expandedServices[uuid] : true;
+        }
+
+        function renderInspectorServicesList() {
+          const allServices = state.services;
+          const q = state.searchQuery.trim().toLowerCase();
+
+          const allExpanded =
+            allServices.length > 0 && allServices.every((svc) => isServiceExpanded(svc.uuid));
+          els.inspectorToggleAllBtn.textContent = allExpanded ? 'Collapse All' : 'Expand All';
+
+          const filtered = !q
+            ? allServices
+            : allServices
+                .map(function (svc) {
+                  const svcMatch =
+                    svc.name.toLowerCase().includes(q) ||
+                    svc.uuid.toLowerCase().includes(q) ||
+                    svc.shortUuid.toLowerCase().includes(q);
+                  if (svcMatch) return svc;
+                  const matchedChars = svc.characteristics.filter(
+                    (c) =>
+                      c.name.toLowerCase().includes(q) ||
+                      c.uuid.toLowerCase().includes(q) ||
+                      c.shortUuid.toLowerCase().includes(q)
+                  );
+                  return matchedChars.length
+                    ? Object.assign({}, svc, { characteristics: matchedChars })
+                    : null;
+                })
+                .filter(Boolean);
+
+          if (!filtered.length) {
+            els.gattServicesContainer.innerHTML =
+              '<div class="rounded-2xl border border-slate-800/90 bg-[#0D131F] p-8 text-center">' +
+              '<p class="text-sm font-medium text-slate-300">' +
+              (allServices.length === 0
+                ? 'No primary GATT services were returned by this device.'
+                : 'No services or characteristics match "' + escapeHtml(state.searchQuery) + '".') +
+              '</p>' +
+              (q
+                ? '<button type="button" data-action="clear-search" class="mt-3 text-xs font-medium text-sky-400 hover:text-sky-300">Clear filter</button>'
+                : '') +
+              '</div>';
+            return;
+          }
+
+          els.gattServicesContainer.innerHTML = filtered
+            .map(function (svc) {
+              const expanded = isServiceExpanded(svc.uuid);
+              const isCopied = state.copiedUuid === svc.uuid;
+              const chevronSvg = expanded
+                ? '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'
+                : '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+              const copySvg = isCopied
+                ? '<svg class="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+                : '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+
+              let charsHtml = '';
+              if (expanded) {
+                if (!svc.characteristics.length) {
+                  charsHtml =
+                    '<div class="border-t border-slate-800/80 bg-[#080C15]/60 px-5 py-4 text-xs text-slate-500">No characteristics discovered under this service.</div>';
+                } else {
+                  const items = svc.characteristics
+                    .map(function (ch) {
+                      const propsStr = formatPropertyFlags(ch.properties);
+                      const actionHtml = ch.properties.read
+                        ? '<button type="button" data-action="read-char" data-service-uuid="' +
+                          escapeHtml(svc.uuid) +
+                          '" data-char-uuid="' +
+                          escapeHtml(ch.uuid) +
+                          '" ' +
+                          (ch.isReading ? 'disabled ' : '') +
+                          'aria-label="Read ' +
+                          escapeHtml(ch.name) +
+                          ' (' +
+                          escapeHtml(ch.shortUuid) +
+                          ')" class="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-lg border border-sky-500/40 bg-sky-500/10 px-3.5 py-2 text-xs font-semibold text-sky-300 transition-colors hover:bg-sky-500/20 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">' +
+                          (ch.isReading
+                            ? '<svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Reading...</span>'
+                            : '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg><span>Read</span>') +
+                          '</button>'
+                        : '<span class="whitespace-nowrap font-mono text-xs text-slate-500">Not readable</span>';
+
+                      const readResultHtml = ch.lastRead
+                        ? '<div data-testid="char-read-result-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" class="mt-3 grid grid-cols-1 gap-2 rounded-xl border border-slate-800/90 bg-[#0D131F] px-3.5 py-2.5 font-mono text-xs sm:grid-cols-12 sm:items-center">' +
+                          '<div class="sm:col-span-5"><span class="text-slate-500">Decoded: </span><span class="font-medium text-emerald-300">' +
+                          escapeHtml(ch.lastRead.decoded) +
+                          '</span></div>' +
+                          '<div class="truncate sm:col-span-5"><span class="text-slate-500">Hex: </span><span class="text-slate-200">' +
+                          escapeHtml(ch.lastRead.hex) +
+                          '</span></div>' +
+                          '<div class="tabular-nums text-slate-500 sm:col-span-2 sm:text-right">' +
+                          ch.lastRead.byteLength +
+                          'B · ' +
+                          escapeHtml(formatClock(ch.lastRead.readAt)) +
+                          '</div></div>'
+                        : '';
+
+                      const readErrHtml = ch.readError
+                        ? '<div class="mt-2.5 rounded-lg border border-rose-500/30 bg-rose-950/20 px-3 py-2 font-mono text-xs text-rose-300">Read error: ' +
+                          escapeHtml(ch.readError) +
+                          '</div>'
+                        : '';
+
+                      return (
+                        '<li class="px-4 py-4 sm:px-5">' +
+                        '<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">' +
+                        '<div class="min-w-0 space-y-1">' +
+                        '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">' +
+                        '<span class="text-sm font-medium text-slate-200">' +
+                        escapeHtml(ch.name) +
+                        '</span>' +
+                        '<span class="font-mono text-xs text-emerald-400">' +
+                        escapeHtml(ch.shortUuid) +
+                        '</span></div>' +
+                        '<div class="truncate font-mono text-xs text-slate-500">' +
+                        escapeHtml(ch.uuid) +
+                        '</div>' +
+                        '<div class="font-mono text-[11px] tracking-wide text-slate-400">' +
+                        escapeHtml(propsStr) +
+                        '</div></div>' +
+                        '<div class="flex shrink-0 items-center gap-2">' +
+                        actionHtml +
+                        '</div></div>' +
+                        readResultHtml +
+                        readErrHtml +
+                        '</li>'
+                      );
+                    })
+                    .join('');
+
+                  charsHtml =
+                    '<div class="border-t border-slate-800/80 bg-[#080C15]/60"><ul class="divide-y divide-slate-800/70">' +
+                    items +
+                    '</ul></div>';
+                }
+              }
+
+              return (
+                '<div class="overflow-hidden rounded-2xl border border-slate-800/90 bg-[#0D131F]">' +
+                '<div class="flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5">' +
+                '<button type="button" data-action="toggle-service" data-service-uuid="' +
+                escapeHtml(svc.uuid) +
+                '" aria-expanded="' +
+                String(expanded) +
+                '" class="flex min-h-[44px] min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">' +
+                '<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#080C15] text-slate-400">' +
+                chevronSvg +
+                '</span>' +
+                '<div class="min-w-0 flex-1">' +
+                '<div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">' +
+                '<span class="text-sm font-semibold text-slate-100">' +
+                escapeHtml(svc.name) +
+                '</span>' +
+                '<span class="font-mono text-xs font-medium text-sky-400">' +
+                escapeHtml(svc.shortUuid) +
+                '</span>' +
+                '<span class="font-mono text-xs text-slate-500">· ' +
+                svc.characteristics.length +
+                ' ' +
+                (svc.characteristics.length === 1 ? 'characteristic' : 'characteristics') +
+                '</span></div>' +
+                '<div class="mt-0.5 truncate font-mono text-xs text-slate-500">' +
+                escapeHtml(svc.uuid) +
+                '</div></div></button>' +
+                '<button type="button" data-action="copy-uuid" data-uuid="' +
+                escapeHtml(svc.uuid) +
+                '" aria-label="Copy UUID for ' +
+                escapeHtml(svc.name) +
+                '" class="flex min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-800/80 hover:text-slate-100">' +
+                copySvg +
+                '</button></div>' +
+                charsHtml +
+                '</div>'
+              );
+            })
+            .join('');
+        }
+
+        function renderInspector() {
+          const isConnected = state.status === 'connected';
+          els.inspectorEmptyState.classList.toggle('hidden', isConnected);
+          els.inspectorConnectedShell.classList.toggle('hidden', !isConnected);
+          if (!isConnected) return;
+
+          const totalChars = state.services.reduce((acc, s) => acc + s.characteristics.length, 0);
+          els.inspectorSummaryMeta.textContent =
+            state.services.length +
+            ' ' +
+            (state.services.length === 1 ? 'service' : 'services') +
+            ' · ' +
+            totalChars +
+            ' ' +
+            (totalChars === 1 ? 'characteristic' : 'characteristics') +
+            (state.isDemoMode
+              ? ' · Simulated Zeblaze GTR 3 Pro (Realtek 8763EW)'
+              : ' · Live peripheral dump');
+
+          renderInspectorServicesList();
+        }
+
+        function renderActiveViewVisibility() {
+          const isDash = state.activeTab === 'dashboard';
+          els.viewDashboard.classList.toggle('hidden', !isDash);
+          els.viewInspector.classList.toggle('hidden', isDash);
+        }
+
+        function renderDashboard() {
+          renderHeartRateCard();
+          renderBatteryCard();
+          renderDeviceInfoCard();
+        }
+
+        function renderAll() {
+          renderBrowserNotice();
+          renderHeaderAndNav();
+          renderConnectionPanel();
+          renderActiveViewVisibility();
+          renderDashboard();
+          renderInspector();
+        }
+
+        // =====================================================================
+        // 8. Event Wiring
+        // =====================================================================
+        els.brandHomeLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          setActiveTab('dashboard');
+        });
+
+        document.querySelectorAll('[data-tab-trigger]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const tab = btn.getAttribute('data-tab-trigger');
+            if (tab === 'dashboard' || tab === 'inspector') {
+              setActiveTab(tab);
+            }
+          });
+        });
+
+        function handlePrimaryAction() {
+          if (state.status === 'connected') disconnectWatch();
+          else connectWatch();
+        }
+
+        els.topbarActionBtn.addEventListener('click', handlePrimaryAction);
+        els.heroConnectBtn.addEventListener('click', handlePrimaryAction);
+        els.demoSwitch.addEventListener('click', function () {
+          toggleDemoMode();
+        });
+        els.noticeDemoBtn.addEventListener('click', function () {
+          toggleDemoMode(true);
+        });
+        els.dismissErrorBtn.addEventListener('click', function () {
+          state.error = null;
+          renderConnectionPanel();
+        });
+        els.batteryRefreshBtn.addEventListener('click', refreshBattery);
+        els.deviceInfoInspectBtn.addEventListener('click', function () {
+          setActiveTab('inspector');
+        });
+        els.inspectorConnectBtn.addEventListener('click', connectWatch);
+        els.inspectorDemoBtn.addEventListener('click', function () {
+          toggleDemoMode(true);
+        });
+
+        // Interactive Heart Rate Sparkline Probe
+        els.hrChartStage.addEventListener('mouseover', function (e) {
+          const rect = e.target.closest('[data-hr-idx]');
+          if (!rect) return;
+          const idx = Number(rect.getAttribute('data-hr-idx'));
+          if (!Number.isNaN(idx) && state.hoveredHrIndex !== idx) {
+            state.hoveredHrIndex = idx;
+            renderHeartRateCard();
+          }
+        });
+        els.hrChartStage.addEventListener('click', function (e) {
+          const rect = e.target.closest('[data-hr-idx]');
+          if (!rect) return;
+          const idx = Number(rect.getAttribute('data-hr-idx'));
+          if (!Number.isNaN(idx)) {
+            state.hoveredHrIndex = idx;
+            renderHeartRateCard();
+          }
+        });
+        els.hrChartStage.addEventListener('mouseleave', function () {
+          if (state.hoveredHrIndex !== null) {
+            state.hoveredHrIndex = null;
+            renderHeartRateCard();
+          }
+        });
+
+        // Watch Inspector Search, Toggle All, Accordion & Characteristic Read
+        els.gattSearchInput.addEventListener('input', function (e) {
+          state.searchQuery = e.target.value;
+          renderInspectorServicesList();
+        });
+
+        els.inspectorToggleAllBtn.addEventListener('click', function () {
+          const allExpanded =
+            state.services.length > 0 && state.services.every((s) => isServiceExpanded(s.uuid));
+          const next = !allExpanded;
+          state.services.forEach(function (svc) {
+            state.expandedServices[svc.uuid] = next;
+          });
+          renderInspectorServicesList();
+        });
+
+        els.gattServicesContainer.addEventListener('click', function (e) {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const action = btn.getAttribute('data-action');
+
+          if (action === 'toggle-service') {
+            const uuid = btn.getAttribute('data-service-uuid');
+            state.expandedServices[uuid] = !isServiceExpanded(uuid);
+            renderInspectorServicesList();
+          } else if (action === 'copy-uuid') {
+            const uuid = btn.getAttribute('data-uuid');
+            if (navigator.clipboard && uuid) {
+              navigator.clipboard.writeText(uuid).catch(() => {});
+            }
+            state.copiedUuid = uuid;
+            renderInspectorServicesList();
+            if (copyTimeoutId) window.clearTimeout(copyTimeoutId);
+            copyTimeoutId = window.setTimeout(function () {
+              state.copiedUuid = null;
+              renderInspectorServicesList();
+            }, 1500);
+          } else if (action === 'read-char') {
+            const svcUuid = btn.getAttribute('data-service-uuid');
+            const charUuid = btn.getAttribute('data-char-uuid');
+            readCharacteristic(svcUuid, charUuid);
+          } else if (action === 'clear-search') {
+            state.searchQuery = '';
+            els.gattSearchInput.value = '';
+            renderInspectorServicesList();
+          }
+        });
+
+        // Initial Render & optional ?demo=1 preview parameter
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('demo') === '1') {
+          startDemoMode();
+        } else {
+          renderAll();
+        }
+      })();
+    </script>
+  </body>
+</html>
