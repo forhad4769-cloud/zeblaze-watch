@@ -346,8 +346,49 @@
                 </div>
               </div>
 
+              <!-- Remote HR Sensor Quick Actions -->
+              <div class="mt-4 flex flex-col gap-2 rounded-xl border border-slate-800/80 bg-[#080C15] p-3">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    id="dash-trigger-hr-btn"
+                    data-action="trigger-hr-start"
+                    data-testid="dash-trigger-hr-btn"
+                    disabled
+                    class="inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-lg border border-emerald-500/45 bg-emerald-500/15 px-3.5 py-1.5 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/25 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polygon points="6 3 20 12 6 21 6 3" />
+                    </svg>
+                    <span>Trigger Live HR Sensor</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="dash-stop-hr-btn"
+                    data-action="trigger-hr-stop"
+                    data-testid="dash-stop-hr-btn"
+                    disabled
+                    class="inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-lg border border-rose-500/40 bg-rose-500/10 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition-colors hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect width="12" height="12" x="6" y="6" rx="1.5" />
+                    </svg>
+                    <span>Stop HR Sensor</span>
+                  </button>
+                </div>
+
+                <div
+                  id="dash-hr-cmd-status"
+                  data-testid="dash-hr-cmd-status"
+                  class="font-mono text-[11px] text-slate-400"
+                >
+                  Connect watch to send FitCloudPro HR command
+                </div>
+              </div>
+
               <!-- Sparkline Stage -->
-              <div id="hr-chart-stage" class="mt-6"></div>
+              <div id="hr-chart-stage" class="mt-5"></div>
 
               <!-- Min / Avg / Max Stats -->
               <div class="mt-5 grid grid-cols-3 divide-x divide-slate-800/80 border-t border-slate-800/80 pt-4">
@@ -502,10 +543,10 @@
             </article>
           </div>
 
-          <!-- Live Watch Stream (0xFEA1) Card -->
+          <!-- Live Watch Stream (000001ff) Card -->
           <div class="lg:col-span-12">
             <article
-              aria-label="Live Watch Stream (0xFEA1)"
+              aria-label="Live Watch Stream (000001ff)"
               class="flex flex-col justify-between rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:p-6"
             >
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -518,9 +559,9 @@
                       <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
                       <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-slate-100">Live Watch Stream (0xFEA1)</h2>
+                    <h2 class="text-sm font-semibold text-slate-100">Live Watch Stream (000001ff)</h2>
                     <span aria-hidden="true">·</span>
-                    <span class="font-mono text-slate-500">0000fea1</span>
+                    <span class="font-mono text-slate-500">000001ff-3c17-d293-8e48-14fe2e4da212</span>
                   </div>
                   <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
                     <span
@@ -563,7 +604,7 @@
               <div id="fea1-stream-container" data-testid="fea1-stream-log" class="mt-4"></div>
 
               <div id="fea1-stream-footer" class="mt-4 border-t border-slate-800/80 pt-3.5 text-xs text-slate-400">
-                Automatically calls startNotifications() on FitCloudPro Sync TX (0xFEA1) upon connection.
+                Automatically calls startNotifications() on all notify characteristics inside 000001ff-3c17-d293-8e48-14fe2e4da212 upon connection.
               </div>
             </article>
           </div>
@@ -598,10 +639,11 @@
             <p class="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-400">
               Connect your Zeblaze GTR 3 Pro (FitCloudPro) to enumerate every exposed GATT Service
               UUID, characteristic flag, and raw byte payload—including Realtek &amp; FitCloudPro
-              vendor services
-              <span class="font-mono text-slate-300">0xFEE7</span>,
-              <span class="font-mono text-slate-300">0xFFD0</span>, and
-              <span class="font-mono text-slate-300">6e400001</span>.
+              services
+              <span class="font-mono text-slate-300">000001ff</span>,
+              <span class="font-mono text-slate-300">00006287</span>,
+              <span class="font-mono text-slate-300">0000d0ff</span>, and
+              <span class="font-mono text-slate-300">0xFEE7</span>.
             </p>
             <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <button
@@ -623,48 +665,89 @@
 
           <!-- Connected Explorer Content -->
           <div id="inspector-connected-shell" class="hidden space-y-4">
-            <div class="flex flex-col gap-4 rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 class="text-base font-semibold text-slate-100 sm:text-lg">
-                  GATT Service Explorer
-                </h2>
-                <p
-                  id="inspector-summary-meta"
-                  class="mt-0.5 font-mono text-xs tabular-nums text-slate-400"
-                ></p>
-              </div>
-
-              <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-                <div class="relative">
-                  <svg
-                    class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-500"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                  </svg>
-                  <label for="gatt-search" class="sr-only">Filter GATT services or UUIDs</label>
-                  <input
-                    id="gatt-search"
-                    type="search"
-                    placeholder="Filter UUID or name..."
-                    class="min-h-[42px] w-full rounded-xl border border-slate-800 bg-[#080C15] py-2 pr-3 pl-9 font-mono text-xs text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none sm:w-60"
-                  />
+            <div class="space-y-4 rounded-2xl border border-slate-800/90 bg-[#0D131F] p-5">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 class="text-base font-semibold text-slate-100 sm:text-lg">
+                    GATT Service Explorer
+                  </h2>
+                  <p
+                    id="inspector-summary-meta"
+                    class="mt-0.5 font-mono text-xs tabular-nums text-slate-400"
+                  ></p>
                 </div>
 
-                <button
-                  type="button"
-                  id="inspector-toggle-all-btn"
-                  class="inline-flex min-h-[42px] items-center justify-center whitespace-nowrap rounded-xl border border-slate-800 bg-[#080C15] px-3.5 py-2 text-xs font-medium text-slate-300 transition-colors hover:border-slate-700 hover:text-slate-100"
+                <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+                  <div class="relative">
+                    <svg
+                      class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <label for="gatt-search" class="sr-only">Filter GATT services or UUIDs</label>
+                    <input
+                      id="gatt-search"
+                      type="search"
+                      placeholder="Filter UUID or name..."
+                      class="min-h-[42px] w-full rounded-xl border border-slate-800 bg-[#080C15] py-2 pr-3 pl-9 font-mono text-xs text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none sm:w-60"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    id="inspector-toggle-all-btn"
+                    class="inline-flex min-h-[42px] items-center justify-center whitespace-nowrap rounded-xl border border-slate-800 bg-[#080C15] px-3.5 py-2 text-xs font-medium text-slate-300 transition-colors hover:border-slate-700 hover:text-slate-100"
+                  >
+                    Collapse All
+                  </button>
+                </div>
+              </div>
+
+              <!-- Watch Inspector Remote HR Quick Actions -->
+              <div class="flex flex-col gap-2.5 border-t border-slate-800/80 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    id="inspector-trigger-hr-btn"
+                    data-action="trigger-hr-start"
+                    data-testid="inspector-trigger-hr-btn"
+                    class="inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-lg border border-emerald-500/45 bg-emerald-500/15 px-3.5 py-1.5 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/25 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polygon points="6 3 20 12 6 21 6 3" />
+                    </svg>
+                    <span>Trigger Live HR Sensor</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="inspector-stop-hr-btn"
+                    data-action="trigger-hr-stop"
+                    data-testid="inspector-stop-hr-btn"
+                    class="inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-lg border border-rose-500/40 bg-rose-500/10 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition-colors hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect width="12" height="12" x="6" y="6" rx="1.5" />
+                    </svg>
+                    <span>Stop HR Sensor</span>
+                  </button>
+                </div>
+
+                <div
+                  id="inspector-hr-cmd-status"
+                  data-testid="inspector-hr-cmd-status"
+                  class="font-mono text-xs text-slate-400 sm:text-right"
                 >
-                  Collapse All
-                </button>
+                  Quick command: AB 00 04 FF 31 0A 01 / 00 → 000001ff
+                </div>
               </div>
             </div>
 
@@ -726,23 +809,30 @@
         // =====================================================================
         // 1. Constants & Bluetooth GATT UUID Definitions
         // =====================================================================
+        const FITCLOUDPRO_PRIMARY_SERVICE = '000001ff-3c17-d293-8e48-14fe2e4da212';
+        const FITCLOUDPRO_WRITE_CHAR = '000002ff-3c17-d293-8e48-14fe2e4da212';
+        const FITCLOUDPRO_NOTIFY_CHAR = '000003ff-3c17-d293-8e48-14fe2e4da212';
+        const REALTEK_VENDOR_6287_SERVICE = '00006287-3c17-d293-8e48-14fe2e4da212';
+        const REALTEK_VENDOR_D0FF_SERVICE = '0000d0ff-3c17-d293-8e48-14fe2e4da212';
         const FITCLOUDPRO_VENDOR_SERVICE = '0000fee7-0000-1000-8000-00805f9b34fb';
-        const REALTEK_VENDOR_SERVICE = '0000ffd0-0000-1000-8000-00805f9b34fb';
-        const FITCLOUDPRO_UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 
-        // Includes 0x180F, 0x180A, 0x180D, 0x1800, 0xFEE7, 0xFFD0, and FitCloudPro UART
+        const FITCLOUDPRO_HR_START_HEX = 'AB 00 04 FF 31 0A 01';
+        const FITCLOUDPRO_HR_STOP_HEX = 'AB 00 04 FF 31 0A 00';
+
+        // Exact 6 GATT service UUIDs discovered on the Zeblaze GTR 3 Pro
         const OPTIONAL_BLUETOOTH_SERVICES = [
-          0x180f,
-          0x180a,
-          0x180d,
-          'generic_access',
-          FITCLOUDPRO_VENDOR_SERVICE,
-          REALTEK_VENDOR_SERVICE,
-          FITCLOUDPRO_UART_SERVICE,
+          '000001ff-3c17-d293-8e48-14fe2e4da212',
+          '00006287-3c17-d293-8e48-14fe2e4da212',
+          '0000d0ff-3c17-d293-8e48-14fe2e4da212',
+          '0000fee7-0000-1000-8000-00805f9b34fb',
+          '00001800-0000-1000-8000-00805f9b34fb',
+          '00001801-0000-1000-8000-00805f9b34fb',
         ];
 
         const GATT_UUIDS = {
           GENERIC_ACCESS: '00001800-0000-1000-8000-00805f9b34fb',
+          GENERIC_ATTRIBUTE: '00001801-0000-1000-8000-00805f9b34fb',
+          SERVICE_CHANGED: '00002a05-0000-1000-8000-00805f9b34fb',
           DEVICE_NAME: '00002a00-0000-1000-8000-00805f9b34fb',
           APPEARANCE: '00002a01-0000-1000-8000-00805f9b34fb',
           DEVICE_INFORMATION: '0000180a-0000-1000-8000-00805f9b34fb',
@@ -757,14 +847,24 @@
           HEART_RATE_MEASUREMENT: '00002a37-0000-1000-8000-00805f9b34fb',
           BODY_SENSOR_LOCATION: '00002a38-0000-1000-8000-00805f9b34fb',
           HEART_RATE_CONTROL_POINT: '00002a39-0000-1000-8000-00805f9b34fb',
+          FITCLOUD_PRIMARY: FITCLOUDPRO_PRIMARY_SERVICE,
+          FITCLOUD_WRITE: FITCLOUDPRO_WRITE_CHAR,
+          FITCLOUD_NOTIFY: FITCLOUDPRO_NOTIFY_CHAR,
+          VENDOR_6287: REALTEK_VENDOR_6287_SERVICE,
+          VENDOR_D0FF: REALTEK_VENDOR_D0FF_SERVICE,
           VENDOR_FEE7: FITCLOUDPRO_VENDOR_SERVICE,
           VENDOR_FEC9: '0000fec9-0000-1000-8000-00805f9b34fb',
           VENDOR_FEA1: '0000fea1-0000-1000-8000-00805f9b34fb',
-          VENDOR_FFD0: REALTEK_VENDOR_SERVICE,
-          VENDOR_UART: FITCLOUDPRO_UART_SERVICE,
         };
 
         const KNOWN_UUID_LABELS = {
+          '000001ff-3c17-d293-8e48-14fe2e4da212': 'FitCloudPro Command & Telemetry Service',
+          '000002ff-3c17-d293-8e48-14fe2e4da212': 'FitCloudPro Command RX (Write)',
+          '000003ff-3c17-d293-8e48-14fe2e4da212': 'FitCloudPro Telemetry TX (Notify)',
+          '00006287-3c17-d293-8e48-14fe2e4da212': 'Realtek Vendor Service (6287)',
+          '00006387-3c17-d293-8e48-14fe2e4da212': 'Realtek Vendor Channel (6387)',
+          '0000d0ff-3c17-d293-8e48-14fe2e4da212': 'Realtek OTA / Vendor Service (D0FF)',
+          '0000d1ff-3c17-d293-8e48-14fe2e4da212': 'Realtek OTA Control Channel',
           '1800': 'Generic Access',
           '1801': 'Generic Attribute',
           '180a': 'Device Information',
@@ -773,8 +873,6 @@
           '1805': 'Current Time Service',
           '1811': 'Alert Notification Service',
           fee7: 'FitCloudPro Vendor Service',
-          ffd0: 'Realtek 8763EW / FitCloudPro Service',
-          fee0: 'Vendor Telemetry Service',
           '2a00': 'Device Name',
           '2a01': 'Appearance',
           '2a04': 'Peripheral Preferred Connection Parameters',
@@ -796,11 +894,6 @@
           fec9: 'Hardware MAC Info',
           fea1: 'FitCloudPro Sync TX',
           fea2: 'FitCloudPro Sync RX',
-          ffd1: 'Realtek Control Write',
-          ffd2: 'Realtek Telemetry Notify / Read',
-          '6e400001-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART Service (NUS)',
-          '6e400002-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART RX (Write)',
-          '6e400003-b5a3-f393-e0a9-e50e24dcca9e': 'FitCloudPro UART TX (Notify)',
         };
 
         const BODY_SENSOR_LOCATIONS = {
@@ -866,6 +959,10 @@
             normalized === '0x' + target ||
             normalized === '0000' + target + '-0000-1000-8000-00805f9b34fb'
           );
+        }
+
+        function isPrimaryFitCloudService(uuid) {
+          return String(uuid || '').trim().toLowerCase() === FITCLOUDPRO_PRIMARY_SERVICE;
         }
 
         function parseHeartRateMeasurement(dataView, timestamp) {
@@ -1156,6 +1253,44 @@
           return flags.length ? flags.join(' · ') : 'NO FLAGS';
         }
 
+        function parseHexBytes(input) {
+          const raw = String(input == null ? '' : input).trim();
+          if (!raw) {
+            throw new Error('Enter at least one hex byte (e.g. AB 00 04 FF 31 0A 01).');
+          }
+          const tokens = raw
+            .split(/[\s,:-]+/)
+            .map((t) => t.trim())
+            .filter(Boolean);
+          const bytes = [];
+          for (const token of tokens) {
+            const clean = token.replace(/^0x/i, '');
+            if (!/^[0-9a-fA-F]+$/.test(clean)) {
+              throw new Error('Invalid hex token "' + token + '". Use hex bytes 00–FF.');
+            }
+            if (clean.length <= 2) {
+              bytes.push(parseInt(clean, 16));
+            } else {
+              if (clean.length % 2 !== 0) {
+                throw new Error('Hex string "' + token + '" must have an even number of digits.');
+              }
+              for (let i = 0; i < clean.length; i += 2) {
+                bytes.push(parseInt(clean.slice(i, i + 2), 16));
+              }
+            }
+          }
+          if (!bytes.length) {
+            throw new Error('No valid hex bytes found.');
+          }
+          return new Uint8Array(bytes);
+        }
+
+        function formatBytesHex(bytes) {
+          return Array.from(bytes)
+            .map((b) => b.toString(16).toUpperCase().padStart(2, '0'))
+            .join(' ');
+        }
+
         // =====================================================================
         // 3. Demo Mode Dataset (Zeblaze GTR 3 Pro / Realtek 8763EW / FitCloudPro)
         // =====================================================================
@@ -1163,10 +1298,11 @@
           return new TextEncoder().encode(str);
         }
 
-        function makeDemoChar(uuid, props) {
+        function makeDemoChar(uuid, props, serviceUuid) {
           const meta = resolveUuidMetadata(uuid);
           return {
             uuid,
+            serviceUuid: serviceUuid || null,
             shortUuid: meta.shortUuid,
             name: meta.name,
             properties: {
@@ -1184,6 +1320,10 @@
             isListening: false,
             isTogglingNotify: false,
             notifyCount: 0,
+            writeInput: '',
+            isWriting: false,
+            lastWrite: null,
+            writeError: null,
             nativeCharacteristic: null,
           };
         }
@@ -1191,56 +1331,76 @@
         function createDemoGattServices() {
           const defs = [
             {
-              uuid: GATT_UUIDS.BATTERY_SERVICE,
-              chars: [makeDemoChar(GATT_UUIDS.BATTERY_LEVEL, { read: true, notify: true })],
-            },
-            {
-              uuid: GATT_UUIDS.HEART_RATE_SERVICE,
+              uuid: GATT_UUIDS.FITCLOUD_PRIMARY,
               chars: [
-                makeDemoChar(GATT_UUIDS.HEART_RATE_MEASUREMENT, { notify: true }),
-                makeDemoChar(GATT_UUIDS.BODY_SENSOR_LOCATION, { read: true }),
-                makeDemoChar(GATT_UUIDS.HEART_RATE_CONTROL_POINT, { write: true }),
+                makeDemoChar(
+                  GATT_UUIDS.FITCLOUD_WRITE,
+                  { write: true, writeWithoutResponse: true },
+                  GATT_UUIDS.FITCLOUD_PRIMARY
+                ),
+                makeDemoChar(
+                  GATT_UUIDS.FITCLOUD_NOTIFY,
+                  { notify: true },
+                  GATT_UUIDS.FITCLOUD_PRIMARY
+                ),
               ],
             },
             {
-              uuid: GATT_UUIDS.DEVICE_INFORMATION,
+              uuid: GATT_UUIDS.VENDOR_6287,
               chars: [
-                makeDemoChar(GATT_UUIDS.MANUFACTURER_NAME, { read: true }),
-                makeDemoChar(GATT_UUIDS.MODEL_NUMBER, { read: true }),
-                makeDemoChar(GATT_UUIDS.FIRMWARE_REVISION, { read: true }),
-                makeDemoChar(GATT_UUIDS.HARDWARE_REVISION, { read: true }),
-                makeDemoChar(GATT_UUIDS.SOFTWARE_REVISION, { read: true }),
+                makeDemoChar(
+                  '00006387-3c17-d293-8e48-14fe2e4da212',
+                  { read: true, writeWithoutResponse: true, notify: true },
+                  GATT_UUIDS.VENDOR_6287
+                ),
               ],
             },
             {
-              uuid: GATT_UUIDS.GENERIC_ACCESS,
+              uuid: GATT_UUIDS.VENDOR_D0FF,
               chars: [
-                makeDemoChar(GATT_UUIDS.DEVICE_NAME, { read: true }),
-                makeDemoChar(GATT_UUIDS.APPEARANCE, { read: true }),
+                makeDemoChar(
+                  '0000d1ff-3c17-d293-8e48-14fe2e4da212',
+                  { read: true, writeWithoutResponse: true },
+                  GATT_UUIDS.VENDOR_D0FF
+                ),
               ],
             },
             {
               uuid: GATT_UUIDS.VENDOR_FEE7,
               chars: [
-                makeDemoChar('0000fec7-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
-                makeDemoChar('0000fec8-0000-1000-8000-00805f9b34fb', { indicate: true }),
-                makeDemoChar(GATT_UUIDS.VENDOR_FEC9, { read: true }),
-                makeDemoChar(GATT_UUIDS.VENDOR_FEA1, { notify: true, write: true, writeWithoutResponse: true }),
-                makeDemoChar('0000fea2-0000-1000-8000-00805f9b34fb', { read: true, notify: true }),
+                makeDemoChar(
+                  '0000fec7-0000-1000-8000-00805f9b34fb',
+                  { write: true, writeWithoutResponse: true },
+                  GATT_UUIDS.VENDOR_FEE7
+                ),
+                makeDemoChar(
+                  '0000fec8-0000-1000-8000-00805f9b34fb',
+                  { indicate: true },
+                  GATT_UUIDS.VENDOR_FEE7
+                ),
+                makeDemoChar(GATT_UUIDS.VENDOR_FEC9, { read: true }, GATT_UUIDS.VENDOR_FEE7),
+                makeDemoChar(
+                  GATT_UUIDS.VENDOR_FEA1,
+                  { notify: true, write: true, writeWithoutResponse: true },
+                  GATT_UUIDS.VENDOR_FEE7
+                ),
               ],
             },
             {
-              uuid: GATT_UUIDS.VENDOR_FFD0,
+              uuid: GATT_UUIDS.GENERIC_ACCESS,
               chars: [
-                makeDemoChar('0000ffd1-0000-1000-8000-00805f9b34fb', { write: true, writeWithoutResponse: true }),
-                makeDemoChar('0000ffd2-0000-1000-8000-00805f9b34fb', { read: true, notify: true }),
+                makeDemoChar(GATT_UUIDS.DEVICE_NAME, { read: true }, GATT_UUIDS.GENERIC_ACCESS),
+                makeDemoChar(GATT_UUIDS.APPEARANCE, { read: true }, GATT_UUIDS.GENERIC_ACCESS),
               ],
             },
             {
-              uuid: GATT_UUIDS.VENDOR_UART,
+              uuid: GATT_UUIDS.GENERIC_ATTRIBUTE,
               chars: [
-                makeDemoChar('6e400002-b5a3-f393-e0a9-e50e24dcca9e', { write: true, writeWithoutResponse: true }),
-                makeDemoChar('6e400003-b5a3-f393-e0a9-e50e24dcca9e', { notify: true }),
+                makeDemoChar(
+                  GATT_UUIDS.SERVICE_CHANGED,
+                  { indicate: true },
+                  GATT_UUIDS.GENERIC_ATTRIBUTE
+                ),
               ],
             },
           ];
@@ -1263,6 +1423,7 @@
           const map = {
             [GATT_UUIDS.DEVICE_NAME]: encodeAscii(DEMO_DEVICE_INFO.deviceName),
             [GATT_UUIDS.APPEARANCE]: new Uint8Array([0xc1, 0x00]),
+            [GATT_UUIDS.SERVICE_CHANGED]: new Uint8Array([0x01, 0x00, 0xff, 0xff]),
             [GATT_UUIDS.MANUFACTURER_NAME]: encodeAscii(DEMO_DEVICE_INFO.manufacturer),
             [GATT_UUIDS.MODEL_NUMBER]: encodeAscii(DEMO_DEVICE_INFO.model),
             [GATT_UUIDS.FIRMWARE_REVISION]: encodeAscii(DEMO_DEVICE_INFO.firmwareRevision),
@@ -1277,7 +1438,7 @@
             ]),
             [GATT_UUIDS.BODY_SENSOR_LOCATION]: new Uint8Array([0x02]),
             [GATT_UUIDS.VENDOR_FEC9]: new Uint8Array([0xc1, 0xa1, 0xb2, 0x2b, 0x96, 0x8a]),
-            [GATT_UUIDS.VENDOR_FEA1]: new Uint8Array([
+            [GATT_UUIDS.FITCLOUD_NOTIFY]: new Uint8Array([
               0xab,
               0x00,
               0x06,
@@ -1288,7 +1449,7 @@
               Math.max(0, Math.min(100, currentBattery)),
               seq,
             ]),
-            '0000fea2-0000-1000-8000-00805f9b34fb': new Uint8Array([
+            [GATT_UUIDS.VENDOR_FEA1]: new Uint8Array([
               0xab,
               0x00,
               0x06,
@@ -1298,15 +1459,9 @@
               0x01,
               (0x5c + seq) & 0xff,
             ]),
+            '00006387-3c17-d293-8e48-14fe2e4da212': encodeAscii('RTL8763EW-GTR3Pro'),
+            '0000d1ff-3c17-d293-8e48-14fe2e4da212': new Uint8Array([0x02, 0x04, 0x12, seq]),
             '0000fec8-0000-1000-8000-00805f9b34fb': new Uint8Array([0xfe, 0x01, 0x00, 0x08, seq]),
-            '0000ffd2-0000-1000-8000-00805f9b34fb': encodeAscii('RTL8763EW-466x466'),
-            '6e400003-b5a3-f393-e0a9-e50e24dcca9e': new Uint8Array([
-              0x5a,
-              0x05,
-              seq,
-              Math.max(40, Math.min(200, currentBpm)),
-              Math.max(0, Math.min(100, currentBattery)),
-            ]),
           };
           const bytes = map[key] || new Uint8Array([0x01, seq]);
           return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -1352,6 +1507,10 @@
           fea1Listening: false,
           fea1Error: null,
           fea1StreamLog: [],
+          hrCommandBusy: false,
+          hrCommandActive: false,
+          hrCommandStatus: null,
+          hrCommandError: null,
           services: [],
           expandedServices: {},
           searchQuery: '',
@@ -1403,6 +1562,9 @@
           hrBpmValue: document.getElementById('hr-bpm-value'),
           hrZoneLabel: document.getElementById('hr-zone-label'),
           hrStreamStatus: document.getElementById('hr-stream-status'),
+          dashTriggerHrBtn: document.getElementById('dash-trigger-hr-btn'),
+          dashStopHrBtn: document.getElementById('dash-stop-hr-btn'),
+          dashHrCmdStatus: document.getElementById('dash-hr-cmd-status'),
           hrChartStage: document.getElementById('hr-chart-stage'),
           hrStatMin: document.getElementById('hr-stat-min'),
           hrStatAvg: document.getElementById('hr-stat-avg'),
@@ -1427,6 +1589,9 @@
           inspectorConnectBtn: document.getElementById('inspector-connect-btn'),
           inspectorDemoBtn: document.getElementById('inspector-demo-btn'),
           inspectorSummaryMeta: document.getElementById('inspector-summary-meta'),
+          inspectorTriggerHrBtn: document.getElementById('inspector-trigger-hr-btn'),
+          inspectorStopHrBtn: document.getElementById('inspector-stop-hr-btn'),
+          inspectorHrCmdStatus: document.getElementById('inspector-hr-cmd-status'),
           gattSearchInput: document.getElementById('gatt-search'),
           inspectorToggleAllBtn: document.getElementById('inspector-toggle-all-btn'),
           gattServicesContainer: document.getElementById('gatt-services-container'),
@@ -1442,11 +1607,42 @@
           }
         }
 
-        function appendFea1Packet(dataView, timestamp) {
+        function isStreamLogCharacteristic(charModel) {
+          if (!charModel) return false;
+          return (
+            isPrimaryFitCloudService(charModel.serviceUuid) ||
+            matchesShortUuid(charModel.uuid, 'fea1')
+          );
+        }
+
+        function getActiveStreamSources() {
+          const sources = [];
+          state.services.forEach(function (svc) {
+            svc.characteristics.forEach(function (ch) {
+              if (ch.isListening && isStreamLogCharacteristic(ch)) {
+                sources.push(ch.shortUuid);
+              }
+            });
+          });
+          return sources;
+        }
+
+        function syncStreamListeningState() {
+          const activeSources = getActiveStreamSources();
+          if (activeSources.length > 0) {
+            state.fea1Listening = true;
+            state.fea1Error = null;
+          } else {
+            state.fea1Listening = false;
+          }
+        }
+
+        function appendFea1Packet(dataView, timestamp, sourceLabel) {
           const ts = timestamp || Date.now();
           const packet = {
             id: ++streamPacketCounter,
             timestamp: ts,
+            source: sourceLabel || '000001FF',
             hex: formatDataViewHex(dataView) || '(empty)',
             decimals: formatDataViewDecimals(dataView) || '—',
             byteLength: dataView.byteLength,
@@ -1490,8 +1686,8 @@
             }
           }
 
-          if (matchesShortUuid(charModel.uuid, 'fea1')) {
-            appendFea1Packet(dataView, now);
+          if (isStreamLogCharacteristic(charModel)) {
+            appendFea1Packet(dataView, now, charModel.shortUuid);
             if (state.activeTab === 'dashboard') {
               renderFea1StreamCard();
             }
@@ -1509,7 +1705,7 @@
           if (state.isDemoMode) {
             charModel.isListening = true;
             charModel.readError = null;
-            if (matchesShortUuid(charModel.uuid, 'fea1')) {
+            if (isStreamLogCharacteristic(charModel)) {
               state.fea1Listening = true;
               state.fea1Error = null;
             }
@@ -1529,7 +1725,7 @@
 
           if (activeNotifyHandlers.has(key)) {
             charModel.isListening = true;
-            if (matchesShortUuid(charModel.uuid, 'fea1')) {
+            if (isStreamLogCharacteristic(charModel)) {
               state.fea1Listening = true;
             }
             return true;
@@ -1547,7 +1743,7 @@
           activeNotifyHandlers.set(key, { nativeChar, listener, charModel });
           charModel.isListening = true;
           charModel.readError = null;
-          if (matchesShortUuid(charModel.uuid, 'fea1')) {
+          if (isStreamLogCharacteristic(charModel)) {
             state.fea1Listening = true;
             state.fea1Error = null;
           }
@@ -1570,8 +1766,8 @@
           }
 
           charModel.isListening = false;
-          if (matchesShortUuid(charModel.uuid, 'fea1')) {
-            state.fea1Listening = false;
+          if (isStreamLogCharacteristic(charModel)) {
+            syncStreamListeningState();
           }
         }
 
@@ -1593,14 +1789,16 @@
           } catch (err) {
             ch.isListening = false;
             ch.readError = (err && err.message) || 'Notifications rejected by peripheral.';
-            if (matchesShortUuid(ch.uuid, 'fea1')) {
-              state.fea1Listening = false;
-              state.fea1Error = ch.readError;
+            if (isStreamLogCharacteristic(ch)) {
+              syncStreamListeningState();
+              if (!state.fea1Listening) {
+                state.fea1Error = ch.readError;
+              }
             }
           } finally {
             ch.isTogglingNotify = false;
             renderInspectorServicesList();
-            if (matchesShortUuid(ch.uuid, 'fea1') && state.activeTab === 'dashboard') {
+            if (isStreamLogCharacteristic(ch) && state.activeTab === 'dashboard') {
               renderFea1StreamCard();
             }
           }
@@ -1653,6 +1851,10 @@
           state.fea1Listening = false;
           state.fea1Error = null;
           state.fea1StreamLog = [];
+          state.hrCommandBusy = false;
+          state.hrCommandActive = false;
+          state.hrCommandStatus = null;
+          state.hrCommandError = null;
           state.services = [];
           state.expandedServices = {};
         }
@@ -1712,14 +1914,13 @@
           state.services = createDemoGattServices();
           state.expandedServices = {};
 
-          // Mark auto-subscribed demo characteristics as actively listening
+          // Mark auto-subscribed demo characteristics under 000001ff (and 0xFEA1) as actively listening
           const now = Date.now();
           state.services.forEach(function (svc) {
             svc.characteristics.forEach(function (ch) {
               if (
-                matchesShortUuid(ch.uuid, 'fea1') ||
-                matchesShortUuid(ch.uuid, '2a37') ||
-                matchesShortUuid(ch.uuid, '2a19')
+                (isPrimaryFitCloudService(svc.uuid) && ch.properties.notify) ||
+                matchesShortUuid(ch.uuid, 'fea1')
               ) {
                 ch.isListening = true;
                 const dv = getDemoCharacteristicPayload(
@@ -1736,14 +1937,26 @@
             });
           });
 
-          // Seed two realistic FitCloudPro 0xFEA1 packets on demo connect
+          // Seed two realistic 000001ff telemetry packets on demo connect
           appendFea1Packet(
-            getDemoCharacteristicPayload(GATT_UUIDS.VENDOR_FEA1, latestDemoBpm - 1, latestDemoBattery, demoStep - 1),
-            now - 1800
+            getDemoCharacteristicPayload(
+              GATT_UUIDS.FITCLOUD_NOTIFY,
+              latestDemoBpm - 1,
+              latestDemoBattery,
+              demoStep - 1
+            ),
+            now - 1800,
+            '000003FF'
           );
           appendFea1Packet(
-            getDemoCharacteristicPayload(GATT_UUIDS.VENDOR_FEA1, latestDemoBpm, latestDemoBattery, demoStep),
-            now
+            getDemoCharacteristicPayload(
+              GATT_UUIDS.FITCLOUD_NOTIFY,
+              latestDemoBpm,
+              latestDemoBattery,
+              demoStep
+            ),
+            now,
+            '000003FF'
           );
 
           renderAll();
@@ -1752,6 +1965,16 @@
             demoStep += 1;
             latestDemoBpm = generateDemoHeartRateBpm(latestDemoBpm, demoStep);
             const tickNow = Date.now();
+
+            state.heartRateHistory = state.heartRateHistory.slice(-(MAX_HR_HISTORY - 1)).concat({
+              bpm: latestDemoBpm,
+              timestamp: tickNow,
+              sensorContact: 'supported-detected',
+              rrIntervalsMs: [Math.round(60000 / latestDemoBpm)],
+            });
+            if (state.activeTab === 'dashboard') {
+              renderHeartRateCard();
+            }
 
             if (demoStep % 38 === 0 && latestDemoBattery > 18) {
               latestDemoBattery -= 1;
@@ -1767,17 +1990,19 @@
               svc.characteristics.forEach(function (ch) {
                 if (!ch.isListening) return;
 
-                if (matchesShortUuid(ch.uuid, '2a37')) {
-                  const hrView = getDemoCharacteristicPayload(
-                    ch.uuid,
-                    latestDemoBpm,
-                    latestDemoBattery,
-                    demoStep
-                  );
-                  handleCharacteristicNotification(ch, hrView, tickNow);
-                  inspectorDirty = true;
-                } else if (matchesShortUuid(ch.uuid, 'fea1')) {
+                if (isPrimaryFitCloudService(svc.uuid) && ch.properties.notify) {
                   if (demoStep % 2 === 0) {
+                    const view = getDemoCharacteristicPayload(
+                      ch.uuid,
+                      latestDemoBpm,
+                      latestDemoBattery,
+                      demoStep
+                    );
+                    handleCharacteristicNotification(ch, view, tickNow);
+                    inspectorDirty = true;
+                  }
+                } else if (matchesShortUuid(ch.uuid, 'fea1')) {
+                  if (demoStep % 4 === 0) {
                     const fea1View = getDemoCharacteristicPayload(
                       ch.uuid,
                       latestDemoBpm,
@@ -1785,17 +2010,6 @@
                       demoStep
                     );
                     handleCharacteristicNotification(ch, fea1View, tickNow);
-                    inspectorDirty = true;
-                  }
-                } else if (matchesShortUuid(ch.uuid, '2a19')) {
-                  if (demoStep % 38 === 0) {
-                    const battView = getDemoCharacteristicPayload(
-                      ch.uuid,
-                      latestDemoBpm,
-                      latestDemoBattery,
-                      demoStep
-                    );
-                    handleCharacteristicNotification(ch, battView, tickNow);
                     inspectorDirty = true;
                   }
                 } else {
@@ -1889,6 +2103,7 @@
             let foundGenericAccess = false;
             let foundMac = false;
             let foundDeviceInfo = false;
+            let foundPrimaryStream = false;
             let foundFea1 = false;
             let fea1ErrorMsg = null;
             const nextInfo = {
@@ -1901,6 +2116,36 @@
               softwareRevision: null,
             };
 
+            const mapNativeChar = function (ch, serviceUuid) {
+              const chMeta = resolveUuidMetadata(ch.uuid);
+              return {
+                uuid: ch.uuid,
+                serviceUuid: serviceUuid,
+                shortUuid: chMeta.shortUuid,
+                name: chMeta.name,
+                properties: {
+                  broadcast: Boolean(ch.properties.broadcast),
+                  read: Boolean(ch.properties.read),
+                  writeWithoutResponse: Boolean(ch.properties.writeWithoutResponse),
+                  write: Boolean(ch.properties.write),
+                  notify: Boolean(ch.properties.notify),
+                  indicate: Boolean(ch.properties.indicate),
+                  authenticatedSignedWrites: Boolean(ch.properties.authenticatedSignedWrites),
+                },
+                lastRead: null,
+                readError: null,
+                isReading: false,
+                isListening: false,
+                isTogglingNotify: false,
+                notifyCount: 0,
+                writeInput: '',
+                isWriting: false,
+                lastWrite: null,
+                writeError: null,
+                nativeCharacteristic: ch,
+              };
+            };
+
             for (const svc of primaryServices) {
               const svcMeta = resolveUuidMetadata(svc.uuid);
               let rawChars = [];
@@ -1911,28 +2156,7 @@
               }
 
               const mappedChars = rawChars.map(function (ch) {
-                const chMeta = resolveUuidMetadata(ch.uuid);
-                return {
-                  uuid: ch.uuid,
-                  shortUuid: chMeta.shortUuid,
-                  name: chMeta.name,
-                  properties: {
-                    broadcast: Boolean(ch.properties.broadcast),
-                    read: Boolean(ch.properties.read),
-                    writeWithoutResponse: Boolean(ch.properties.writeWithoutResponse),
-                    write: Boolean(ch.properties.write),
-                    notify: Boolean(ch.properties.notify),
-                    indicate: Boolean(ch.properties.indicate),
-                    authenticatedSignedWrites: Boolean(ch.properties.authenticatedSignedWrites),
-                  },
-                  lastRead: null,
-                  readError: null,
-                  isReading: false,
-                  isListening: false,
-                  isTogglingNotify: false,
-                  notifyCount: 0,
-                  nativeCharacteristic: ch,
-                };
+                return mapNativeChar(ch, svc.uuid);
               });
 
               discovered.push({
@@ -1942,6 +2166,24 @@
                 isPrimary: svc.isPrimary,
                 characteristics: mappedChars,
               });
+
+              // FitCloudPro Primary Service (000001ff-3c17-d293-8e48-14fe2e4da212)
+              // Auto-subscribe to ALL notify characteristics inside this service
+              if (isPrimaryFitCloudService(svc.uuid)) {
+                const notifyChars = mappedChars.filter((c) => c.properties.notify);
+                if (notifyChars.length > 0) {
+                  foundPrimaryStream = true;
+                  for (const nChar of notifyChars) {
+                    try {
+                      await startCharacteristicNotifications(nChar);
+                    } catch (err) {
+                      fea1ErrorMsg =
+                        (err && err.message) ||
+                        'Could not enable notifications on ' + nChar.shortUuid + '.';
+                    }
+                  }
+                }
+              }
 
               // Generic Access Service (0x1800 -> Device Name 0x2A00)
               if (matchesShortUuid(svc.uuid, '1800')) {
@@ -1960,7 +2202,7 @@
                 }
               }
 
-              // FitCloudPro Vendor Service (0xFEE7 -> Hardware MAC 0xFEC9 & Sync TX 0xFEA1)
+              // FitCloudPro Vendor Service (0xFEE7 -> Hardware MAC 0xFEC9)
               if (matchesShortUuid(svc.uuid, 'fee7')) {
                 const macCharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, 'fec9'));
                 if (macCharModel) {
@@ -1978,16 +2220,18 @@
                 }
               }
 
-              // Auto-subscribe to FitCloudPro Sync TX 0xFEA1 (under 0xFEE7 or any exposed service)
+              // Auto-subscribe to FitCloudPro Sync TX 0xFEA1 if exposed
               const fea1CharModel = mappedChars.find((c) => matchesShortUuid(c.uuid, 'fea1'));
-              if (fea1CharModel) {
+              if (fea1CharModel && fea1CharModel.properties.notify) {
                 foundFea1 = true;
                 fea1Characteristic = fea1CharModel.nativeCharacteristic;
                 try {
                   await startCharacteristicNotifications(fea1CharModel);
                 } catch (err) {
-                  fea1ErrorMsg =
-                    (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                  if (!foundPrimaryStream) {
+                    fea1ErrorMsg =
+                      (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                  }
                 }
               }
 
@@ -2054,10 +2298,45 @@
               }
             }
 
+            // Fallback direct discovery for 000001ff-3c17-d293-8e48-14fe2e4da212 if omitted from getPrimaryServices()
+            if (
+              !discovered.some((s) => isPrimaryFitCloudService(s.uuid)) &&
+              typeof server.getPrimaryService === 'function'
+            ) {
+              try {
+                const primarySvc = await server.getPrimaryService(FITCLOUDPRO_PRIMARY_SERVICE);
+                const rawChars = await primarySvc.getCharacteristics();
+                const mappedChars = rawChars.map(function (ch) {
+                  return mapNativeChar(ch, primarySvc.uuid || FITCLOUDPRO_PRIMARY_SERVICE);
+                });
+                const svcMeta = resolveUuidMetadata(FITCLOUDPRO_PRIMARY_SERVICE);
+                discovered.unshift({
+                  uuid: primarySvc.uuid || FITCLOUDPRO_PRIMARY_SERVICE,
+                  shortUuid: svcMeta.shortUuid,
+                  name: svcMeta.name,
+                  isPrimary: true,
+                  characteristics: mappedChars,
+                });
+                const notifyChars = mappedChars.filter((c) => c.properties.notify);
+                if (notifyChars.length > 0) {
+                  foundPrimaryStream = true;
+                  for (const nChar of notifyChars) {
+                    try {
+                      await startCharacteristicNotifications(nChar);
+                    } catch (err) {
+                      fea1ErrorMsg =
+                        (err && err.message) ||
+                        'Could not enable notifications on ' + nChar.shortUuid + '.';
+                    }
+                  }
+                }
+              } catch (_) {}
+            }
+
             // Fallback direct reads if 0x1800 (Generic Access) was omitted from getPrimaryServices()
             if (!foundGenericAccess && typeof server.getPrimaryService === 'function') {
               try {
-                const gaSvc = await server.getPrimaryService('generic_access');
+                const gaSvc = await server.getPrimaryService(GATT_UUIDS.GENERIC_ACCESS);
                 foundGenericAccess = true;
                 const nameChar = await gaSvc.getCharacteristic(GATT_UUIDS.DEVICE_NAME);
                 if (nameChar && nameChar.properties && nameChar.properties.read) {
@@ -2089,33 +2368,20 @@
                 if (!foundFea1) {
                   try {
                     const fea1Native = await fee7Svc.getCharacteristic(GATT_UUIDS.VENDOR_FEA1);
-                    foundFea1 = true;
-                    fea1Characteristic = fea1Native;
-                    const fea1FallbackModel = {
-                      uuid: fea1Native.uuid || GATT_UUIDS.VENDOR_FEA1,
-                      shortUuid: '0xFEA1',
-                      name: 'FitCloudPro Sync TX',
-                      properties: {
-                        broadcast: false,
-                        read: Boolean(fea1Native.properties && fea1Native.properties.read),
-                        writeWithoutResponse: Boolean(fea1Native.properties && fea1Native.properties.writeWithoutResponse),
-                        write: Boolean(fea1Native.properties && fea1Native.properties.write),
-                        notify: Boolean(fea1Native.properties && fea1Native.properties.notify),
-                        indicate: Boolean(fea1Native.properties && fea1Native.properties.indicate),
-                        authenticatedSignedWrites: false,
-                      },
-                      lastRead: null,
-                      readError: null,
-                      isReading: false,
-                      isListening: false,
-                      isTogglingNotify: false,
-                      notifyCount: 0,
-                      nativeCharacteristic: fea1Native,
-                    };
-                    await startCharacteristicNotifications(fea1FallbackModel);
+                    if (fea1Native && fea1Native.properties && fea1Native.properties.notify) {
+                      foundFea1 = true;
+                      fea1Characteristic = fea1Native;
+                      const fea1FallbackModel = mapNativeChar(
+                        fea1Native,
+                        FITCLOUDPRO_VENDOR_SERVICE
+                      );
+                      await startCharacteristicNotifications(fea1FallbackModel);
+                    }
                   } catch (err) {
-                    fea1ErrorMsg =
-                      (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                    if (!foundPrimaryStream) {
+                      fea1ErrorMsg =
+                        (err && err.message) || 'Could not enable notifications on 0xFEA1.';
+                    }
                   }
                 }
               } catch (_) {}
@@ -2131,10 +2397,11 @@
             state.macExposed = foundMac;
             state.deviceInfo = nextInfo;
             state.deviceInfoExposed = foundDeviceInfo;
-            state.fea1Exposed = foundFea1;
-            state.fea1Error = fea1ErrorMsg;
+            state.fea1Exposed = foundPrimaryStream || foundFea1;
             state.services = discovered;
             state.expandedServices = {};
+            syncStreamListeningState();
+            state.fea1Error = state.fea1Listening ? null : fea1ErrorMsg;
             renderAll();
           } catch (err) {
             cleanupHardwareConnection();
@@ -2211,6 +2478,209 @@
           } finally {
             ch.isReading = false;
             renderInspectorServicesList();
+          }
+        }
+
+        function findCharModelByShortUuid(shortHex4) {
+          for (const svc of state.services) {
+            const match = svc.characteristics.find((c) => matchesShortUuid(c.uuid, shortHex4));
+            if (match) return { service: svc, charModel: match };
+          }
+          return null;
+        }
+
+        function findFirstWritableCharacteristic() {
+          // 1. Prioritize writable characteristic inside 000001ff-3c17-d293-8e48-14fe2e4da212
+          const primarySvc = state.services.find((svc) => isPrimaryFitCloudService(svc.uuid));
+          if (primarySvc) {
+            const preferred02ff = primarySvc.characteristics.find(
+              (ch) =>
+                ch.uuid.toLowerCase() === FITCLOUDPRO_WRITE_CHAR &&
+                (ch.properties.write || ch.properties.writeWithoutResponse)
+            );
+            if (preferred02ff) return { service: primarySvc, charModel: preferred02ff };
+            const firstPrimaryWritable = primarySvc.characteristics.find(
+              (ch) => ch.properties.write || ch.properties.writeWithoutResponse
+            );
+            if (firstPrimaryWritable) {
+              return { service: primarySvc, charModel: firstPrimaryWritable };
+            }
+          }
+
+          // 2. Fallback to any other vendor writable characteristic
+          let fallback = null;
+          for (const svc of state.services) {
+            for (const ch of svc.characteristics) {
+              if (ch.properties.write || ch.properties.writeWithoutResponse) {
+                if (!fallback) fallback = { service: svc, charModel: ch };
+                if (!matchesShortUuid(ch.uuid, '2a39')) {
+                  return { service: svc, charModel: ch };
+                }
+              }
+            }
+          }
+          return fallback;
+        }
+
+        async function writeCharacteristicHex(serviceUuid, charUuid, hexText) {
+          const service = state.services.find((s) => s.uuid === serviceUuid);
+          const ch = service && service.characteristics.find((c) => c.uuid === charUuid);
+          if (!ch) {
+            throw new Error('Target characteristic not found.');
+          }
+
+          let bytes;
+          try {
+            bytes = parseHexBytes(hexText);
+          } catch (err) {
+            ch.writeError = err.message;
+            renderInspectorServicesList();
+            throw err;
+          }
+
+          const formattedHex = formatBytesHex(bytes);
+          ch.isWriting = true;
+          ch.writeError = null;
+          if (state.activeTab === 'inspector') {
+            renderInspectorServicesList();
+          }
+
+          try {
+            if (state.isDemoMode) {
+              await new Promise((resolve) => window.setTimeout(resolve, 110));
+              // Simulate a FitCloudPro response frame on the listening 000001ff notify char (or 0xFEA1)
+              const primarySvc = state.services.find((s) => isPrimaryFitCloudService(s.uuid));
+              const primaryNotify =
+                primarySvc &&
+                primarySvc.characteristics.find((c) => c.properties.notify && c.isListening);
+              const fea1Entry = findCharModelByShortUuid('fea1');
+              const respChar = primaryNotify || (fea1Entry && fea1Entry.charModel.isListening ? fea1Entry.charModel : null);
+              const isHrStart = formattedHex === FITCLOUDPRO_HR_START_HEX;
+              const isHrStop = formattedHex === FITCLOUDPRO_HR_STOP_HEX;
+              if (respChar) {
+                const respBytes = isHrStart
+                  ? new Uint8Array([0xab, 0x00, 0x05, 0xff, 0x31, 0x0a, 0x01, latestDemoBpm & 0xff])
+                  : isHrStop
+                    ? new Uint8Array([0xab, 0x00, 0x05, 0xff, 0x31, 0x0a, 0x00, 0x00])
+                    : new Uint8Array([0xab, 0x00, 0x04, 0xff, 0x00, bytes[0] & 0xff, 0x01]);
+                const dv = new DataView(respBytes.buffer, respBytes.byteOffset, respBytes.byteLength);
+                handleCharacteristicNotification(respChar, dv, Date.now());
+              }
+            } else {
+              const nativeChar = ch.nativeCharacteristic;
+              if (!nativeChar) {
+                throw new Error('Characteristic handle unavailable. Reconnect watch and try again.');
+              }
+              if (ch.properties.writeWithoutResponse && !ch.properties.write) {
+                if (typeof nativeChar.writeValueWithoutResponse === 'function') {
+                  await nativeChar.writeValueWithoutResponse(bytes);
+                } else {
+                  await nativeChar.writeValue(bytes);
+                }
+              } else if (ch.properties.write) {
+                try {
+                  if (typeof nativeChar.writeValueWithResponse === 'function') {
+                    await nativeChar.writeValueWithResponse(bytes);
+                  } else {
+                    await nativeChar.writeValue(bytes);
+                  }
+                } catch (writeErr) {
+                  if (
+                    ch.properties.writeWithoutResponse &&
+                    typeof nativeChar.writeValueWithoutResponse === 'function'
+                  ) {
+                    await nativeChar.writeValueWithoutResponse(bytes);
+                  } else {
+                    throw writeErr;
+                  }
+                }
+              } else if (typeof nativeChar.writeValue === 'function') {
+                await nativeChar.writeValue(bytes);
+              } else {
+                throw new Error('Characteristic does not support write operations.');
+              }
+            }
+
+            ch.lastWrite = {
+              hex: formattedHex,
+              byteLength: bytes.byteLength,
+              writtenAt: Date.now(),
+            };
+            ch.writeError = null;
+            return { charModel: ch, hex: formattedHex, byteLength: bytes.byteLength };
+          } catch (err) {
+            ch.writeError = (err && err.message) || 'Write rejected by peripheral.';
+            throw err;
+          } finally {
+            ch.isWriting = false;
+            if (state.activeTab === 'inspector') {
+              renderInspectorServicesList();
+            }
+          }
+        }
+
+        async function sendHeartRateSensorCommand(mode) {
+          if (state.status !== 'connected') {
+            state.hrCommandError = 'Connect your GTR 3 Pro watch first.';
+            renderHrCommandControls();
+            return;
+          }
+
+          const target = findFirstWritableCharacteristic();
+          if (!target) {
+            state.hrCommandError = 'No writable GATT characteristic discovered on this watch.';
+            renderHrCommandControls();
+            return;
+          }
+
+          const isStart = mode === 'start';
+          const hexCmd = isStart ? FITCLOUDPRO_HR_START_HEX : FITCLOUDPRO_HR_STOP_HEX;
+
+          state.hrCommandBusy = true;
+          state.hrCommandError = null;
+          renderHrCommandControls();
+
+          try {
+            // Ensure all notify characteristics under 000001ff (and 0xFEA1 if present) are listening
+            const primarySvc = state.services.find((svc) => isPrimaryFitCloudService(svc.uuid));
+            if (primarySvc) {
+              for (const nChar of primarySvc.characteristics) {
+                if (nChar.properties.notify && !nChar.isListening) {
+                  try {
+                    await startCharacteristicNotifications(nChar);
+                  } catch (_) {}
+                }
+              }
+            }
+            const fea1Entry = findCharModelByShortUuid('fea1');
+            if (fea1Entry && fea1Entry.charModel.properties.notify && !fea1Entry.charModel.isListening) {
+              try {
+                await startCharacteristicNotifications(fea1Entry.charModel);
+              } catch (_) {}
+            }
+
+            const result = await writeCharacteristicHex(
+              target.service.uuid,
+              target.charModel.uuid,
+              hexCmd
+            );
+            state.hrCommandActive = isStart;
+            state.hrCommandStatus =
+              (isStart ? 'Live HR started' : 'Live HR stopped') +
+              ' · Sent ' +
+              result.hex +
+              ' → ' +
+              result.charModel.shortUuid;
+            state.hrCommandError = null;
+          } catch (err) {
+            state.hrCommandError =
+              (err && err.message) || 'Failed to send FitCloudPro HR sensor command.';
+          } finally {
+            state.hrCommandBusy = false;
+            renderHrCommandControls();
+            if (state.activeTab === 'dashboard') {
+              renderFea1StreamCard();
+            }
           }
         }
 
@@ -2345,7 +2815,7 @@
               count +
               ' GATT ' +
               (count === 1 ? 'service' : 'services') +
-              ' discovered · Standard + 0xFEE7 · 0xFFD0 · NUS</span>';
+              ' discovered · 000001ff · 00006287 · 0000d0ff · 0xFEE7</span>';
           } else {
             els.deviceSubtitleText.textContent =
               '1.43" 466×466 AMOLED · Realtek 8763EW · Pair over Web Bluetooth to stream telemetry.';
@@ -2429,7 +2899,7 @@
               : 'No live heart rate stream';
             const desc = isConnected
               ? state.heartRateExposed === false
-                ? 'Check the Watch Inspector tab to explore FitCloudPro 0xFEE7, 0xFFD0, and UART characteristics.'
+                ? 'Use Trigger Live HR Sensor above or Watch Inspector to stream proprietary packets on 000001ff.'
                 : 'Open the Heart Rate app on your Zeblaze GTR 3 Pro to begin broadcasting BPM frames.'
               : 'Connect your Zeblaze GTR 3 Pro or enable Demo Mode to view the real-time sparkline.';
 
@@ -2631,7 +3101,7 @@
           if (isConnected) {
             if (state.batteryExposed === false) {
               els.batteryFooterNote.innerHTML =
-                '<span>Standard 0x180F was not returned. Inspect 0xFEE7 or 0xFFD0 in Watch Inspector for proprietary battery frames.</span>';
+                '<span>Standard 0x180F was not returned. Inspect 000001ff or 0xFEE7 in Watch Inspector for proprietary battery frames.</span>';
             } else {
               const updatedText = state.batteryLastUpdated
                 ? formatClock(state.batteryLastUpdated)
@@ -2759,6 +3229,7 @@
         function renderFea1StreamCard() {
           const isConnected = state.status === 'connected';
           const packets = state.fea1StreamLog;
+          const activeSources = isConnected ? getActiveStreamSources() : [];
 
           els.fea1ClearLogBtn.disabled = packets.length === 0;
 
@@ -2773,13 +3244,14 @@
           if (isConnected && state.fea1Listening) {
             els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-emerald-400 animate-pulse';
             els.fea1StreamStatus.className = 'font-mono text-emerald-400';
+            const sourceList = activeSources.length ? ' (' + activeSources.join(', ') + ')' : '';
             els.fea1StreamStatus.textContent = state.isDemoMode
-              ? 'Listening · Simulated 0xFEA1 stream'
-              : 'Listening · Notifications active';
+              ? 'Listening · Simulated 000001ff stream' + sourceList
+              : 'Listening · Notifications active' + sourceList;
           } else if (isConnected && state.fea1Exposed === false) {
             els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-amber-400';
             els.fea1StreamStatus.className = 'font-mono text-amber-300';
-            els.fea1StreamStatus.textContent = '0xFEA1 not exposed by peripheral';
+            els.fea1StreamStatus.textContent = 'No notify characteristics exposed under 000001ff';
           } else if (isConnected && state.fea1Error) {
             els.fea1StreamDot.className = 'h-2 w-2 shrink-0 rounded-full bg-rose-400';
             els.fea1StreamStatus.className = 'font-mono text-rose-300';
@@ -2796,17 +3268,17 @@
 
           if (!packets.length) {
             const title = !isConnected
-              ? 'No 0xFEA1 stream packets yet'
+              ? 'No incoming 000001ff packets yet'
               : state.fea1Exposed === false
-                ? 'FitCloudPro Sync TX (0xFEA1) not found'
+                ? 'No notify characteristics found under 000001ff'
                 : state.fea1Listening
-                  ? 'Listening for incoming 0xFEA1 packets'
-                  : '0xFEA1 notification stream paused';
+                  ? 'Listening for incoming 000001ff packets'
+                  : 'Notification stream paused';
             const desc = !isConnected
-              ? 'Connect your GTR 3 Pro or enable Demo Mode to log incoming FitCloudPro Sync TX packets.'
+              ? 'Connect your GTR 3 Pro or enable Demo Mode to log incoming packets from 000001ff-3c17-d293-8e48-14fe2e4da212.'
               : state.fea1Exposed === false
-                ? 'Open Watch Inspector to check which vendor notify characteristics this firmware exposes.'
-                : 'Every incoming notification packet will appear here with its timestamp, raw hex bytes, and decimal byte values.';
+                ? 'Open Watch Inspector to inspect exposed notify characteristics on this watch.'
+                : 'Every incoming notification packet will appear here with its characteristic UUID, timestamp, raw hex bytes, and decimal values.';
 
             els.fea1StreamContainer.innerHTML =
               '<div class="flex h-36 flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-[#080C15]/70 px-4 text-center">' +
@@ -2830,19 +3302,26 @@
                   escapeHtml(formatClockWithMs(pkt.timestamp)) +
                   '</span>' +
                   '<span class="text-slate-500 sm:hidden">' +
+                  escapeHtml(pkt.source || '000001FF') +
+                  ' · ' +
                   pkt.byteLength +
                   'B</span>' +
                   '</div>' +
-                  '<div class="hidden text-slate-500 tabular-nums sm:col-span-1 sm:block">' +
+                  '<div class="hidden text-slate-400 tabular-nums sm:col-span-2 sm:block">' +
+                  '<span class="text-sky-400/90">' +
+                  escapeHtml(pkt.source || '000001FF') +
+                  '</span>' +
+                  '<span class="text-slate-600"> · ' +
                   pkt.byteLength +
-                  'B</div>' +
+                  'B</span>' +
+                  '</div>' +
                   '<div class="break-all sm:col-span-4">' +
                   '<span class="text-slate-500 sm:hidden">Hex: </span>' +
                   '<span class="font-medium text-sky-300">' +
                   escapeHtml(pkt.hex) +
                   '</span>' +
                   '</div>' +
-                  '<div class="break-all sm:col-span-4">' +
+                  '<div class="break-all sm:col-span-3">' +
                   '<span class="text-slate-500 sm:hidden">Dec: </span>' +
                   '<span class="text-emerald-300">[' +
                   escapeHtml(pkt.decimals) +
@@ -2857,9 +3336,9 @@
               '<div class="overflow-hidden rounded-xl border border-slate-800/90 bg-[#080C15]">' +
               '<div class="hidden grid-cols-12 gap-3 border-b border-slate-800/90 bg-[#0A101B] px-3.5 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-slate-500 sm:grid">' +
               '<div class="col-span-3">Timestamp</div>' +
-              '<div class="col-span-1">Len</div>' +
+              '<div class="col-span-2">Char · Len</div>' +
               '<div class="col-span-4">Raw Hex Bytes</div>' +
-              '<div class="col-span-4">Decimal Values</div>' +
+              '<div class="col-span-3">Decimal Values</div>' +
               '</div>' +
               '<div class="max-h-72 divide-y divide-slate-800/70 overflow-y-auto">' +
               rowsHtml +
@@ -2868,7 +3347,7 @@
           }
 
           els.fea1StreamFooter.textContent =
-            'Automatically calls startNotifications() on FitCloudPro Sync TX (0xFEA1) upon connection. Showing latest ' +
+            'Automatically calls startNotifications() on all notify characteristics inside 000001ff-3c17-d293-8e48-14fe2e4da212 upon connection. Showing latest ' +
             MAX_FEA1_STREAM_LOG +
             ' packets.';
         }
@@ -2877,7 +3356,67 @@
           return state.expandedServices[uuid] !== undefined ? state.expandedServices[uuid] : true;
         }
 
+        function renderHrCommandControls() {
+          const isConnected = state.status === 'connected';
+          const writable = isConnected ? findFirstWritableCharacteristic() : null;
+          const disabled = !isConnected || !writable || state.hrCommandBusy;
+
+          [els.dashTriggerHrBtn, els.inspectorTriggerHrBtn].forEach(function (btn) {
+            if (!btn) return;
+            btn.disabled = disabled;
+            btn.setAttribute('aria-pressed', String(Boolean(state.hrCommandActive)));
+          });
+          [els.dashStopHrBtn, els.inspectorStopHrBtn].forEach(function (btn) {
+            if (!btn) return;
+            btn.disabled = disabled;
+          });
+
+          let statusText = 'Connect watch to send FitCloudPro HR command';
+          let toneClass = 'text-slate-400';
+
+          if (state.hrCommandError) {
+            statusText = 'Error: ' + state.hrCommandError;
+            toneClass = 'text-rose-300';
+          } else if (state.hrCommandBusy) {
+            statusText = 'Writing command to ' + (writable ? writable.charModel.shortUuid : 'watch') + '...';
+            toneClass = 'text-sky-300';
+          } else if (state.hrCommandStatus) {
+            statusText = state.hrCommandStatus;
+            toneClass = state.hrCommandActive ? 'text-emerald-300' : 'text-slate-300';
+          } else if (isConnected && writable) {
+            statusText = 'Target: ' + writable.charModel.shortUuid + ' (000001ff)';
+            toneClass = 'text-slate-400';
+          } else if (isConnected && !writable) {
+            statusText = 'No writable characteristic found';
+            toneClass = 'text-amber-300';
+          }
+
+          if (els.dashHrCmdStatus) {
+            els.dashHrCmdStatus.className = 'font-mono text-[11px] ' + toneClass;
+            els.dashHrCmdStatus.textContent = statusText;
+          }
+          if (els.inspectorHrCmdStatus) {
+            els.inspectorHrCmdStatus.className = 'font-mono text-xs sm:text-right ' + toneClass;
+            els.inspectorHrCmdStatus.textContent = statusText;
+          }
+        }
+
         function renderInspectorServicesList() {
+          // Preserve focus & cursor inside any active hex write input across live notification re-renders
+          let focusedWriteState = null;
+          const activeEl = document.activeElement;
+          if (
+            activeEl &&
+            els.gattServicesContainer.contains(activeEl) &&
+            activeEl.hasAttribute('data-write-char-uuid')
+          ) {
+            focusedWriteState = {
+              charUuid: activeEl.getAttribute('data-write-char-uuid'),
+              start: activeEl.selectionStart,
+              end: activeEl.selectionEnd,
+            };
+          }
+
           const allServices = state.services;
           const q = state.searchQuery.trim().toLowerCase();
 
@@ -2943,6 +3482,7 @@
                       const propsStr = formatPropertyFlags(ch.properties);
                       const canRead = Boolean(ch.properties.read);
                       const canNotify = Boolean(ch.properties.notify || ch.properties.indicate);
+                      const canWrite = Boolean(ch.properties.write || ch.properties.writeWithoutResponse);
 
                       const buttons = [];
                       if (canRead) {
@@ -2999,7 +3539,70 @@
 
                       const actionHtml = buttons.length
                         ? buttons.join('')
-                        : '<span class="whitespace-nowrap font-mono text-xs text-slate-500">Not readable</span>';
+                        : canWrite
+                          ? ''
+                          : '<span class="whitespace-nowrap font-mono text-xs text-slate-500">Not readable</span>';
+
+                      const writeBarHtml = canWrite
+                        ? '<div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">' +
+                          '<label class="sr-only" for="hex-input-' +
+                          escapeHtml(ch.shortUuid) +
+                          '">Hex command bytes for ' +
+                          escapeHtml(ch.name) +
+                          ' (' +
+                          escapeHtml(ch.shortUuid) +
+                          ')</label>' +
+                          '<input type="text" id="hex-input-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" data-write-input="true" data-service-uuid="' +
+                          escapeHtml(svc.uuid) +
+                          '" data-write-char-uuid="' +
+                          escapeHtml(ch.uuid) +
+                          '" data-testid="hex-input-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" value="' +
+                          escapeHtml(ch.writeInput || '') +
+                          '" placeholder="AB 00 04 FF 31 0A 01" autocomplete="off" spellcheck="false" class="min-h-[38px] flex-1 rounded-lg border border-slate-800 bg-[#0D131F] px-3 py-1.5 font-mono text-xs uppercase text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-amber-400/70 focus:outline-none" />' +
+                          '<button type="button" data-action="write-hex" data-service-uuid="' +
+                          escapeHtml(svc.uuid) +
+                          '" data-char-uuid="' +
+                          escapeHtml(ch.uuid) +
+                          '" data-testid="send-hex-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" ' +
+                          (ch.isWriting ? 'disabled ' : '') +
+                          'aria-label="Send Hex to ' +
+                          escapeHtml(ch.name) +
+                          ' (' +
+                          escapeHtml(ch.shortUuid) +
+                          ')" class="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-amber-500/40 bg-amber-500/15 px-3.5 py-1.5 text-xs font-semibold text-amber-200 transition-colors hover:bg-amber-500/25 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400">' +
+                          (ch.isWriting
+                            ? '<svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Sending...</span>'
+                            : '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span>Send Hex</span>') +
+                          '</button></div>'
+                        : '';
+
+                      const writeResultHtml = ch.lastWrite
+                        ? '<div data-testid="char-write-result-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" class="mt-2.5 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/25 bg-amber-950/15 px-3 py-2 font-mono text-xs">' +
+                          '<div class="break-all"><span class="font-semibold text-amber-300">SENT </span><span class="text-slate-200">' +
+                          escapeHtml(ch.lastWrite.hex) +
+                          '</span></div>' +
+                          '<div class="tabular-nums text-slate-400">' +
+                          ch.lastWrite.byteLength +
+                          'B · ' +
+                          escapeHtml(formatClock(ch.lastWrite.writtenAt)) +
+                          '</div></div>'
+                        : '';
+
+                      const writeErrHtml = ch.writeError
+                        ? '<div data-testid="char-write-error-' +
+                          escapeHtml(ch.shortUuid) +
+                          '" class="mt-2 rounded-lg border border-rose-500/30 bg-rose-950/20 px-3 py-2 font-mono text-xs text-rose-300">Write error: ' +
+                          escapeHtml(ch.writeError) +
+                          '</div>'
+                        : '';
 
                       const readResultHtml = ch.lastRead
                         ? '<div data-testid="char-read-result-' +
@@ -3053,6 +3656,9 @@
                         '<div class="flex shrink-0 flex-wrap items-center gap-2">' +
                         actionHtml +
                         '</div></div>' +
+                        writeBarHtml +
+                        writeResultHtml +
+                        writeErrHtml +
                         readResultHtml +
                         readErrHtml +
                         '</li>'
@@ -3106,6 +3712,23 @@
               );
             })
             .join('');
+
+          if (focusedWriteState) {
+            const restored = els.gattServicesContainer.querySelector(
+              'input[data-write-char-uuid="' + focusedWriteState.charUuid + '"]'
+            );
+            if (restored) {
+              restored.focus({ preventScroll: true });
+              if (
+                typeof focusedWriteState.start === 'number' &&
+                typeof focusedWriteState.end === 'number'
+              ) {
+                try {
+                  restored.setSelectionRange(focusedWriteState.start, focusedWriteState.end);
+                } catch (_) {}
+              }
+            }
+          }
         }
 
         function renderInspector() {
@@ -3127,6 +3750,7 @@
               ? ' · Simulated Zeblaze GTR 3 Pro (Realtek 8763EW)'
               : ' · Live peripheral dump');
 
+          renderHrCommandControls();
           renderInspectorServicesList();
         }
 
@@ -3138,6 +3762,7 @@
 
         function renderDashboard() {
           renderHeartRateCard();
+          renderHrCommandControls();
           renderBatteryCard();
           renderDeviceInfoCard();
           renderFea1StreamCard();
@@ -3194,6 +3819,20 @@
           state.fea1StreamLog = [];
           renderFea1StreamCard();
         });
+        [els.dashTriggerHrBtn, els.inspectorTriggerHrBtn].forEach(function (btn) {
+          if (btn) {
+            btn.addEventListener('click', function () {
+              sendHeartRateSensorCommand('start');
+            });
+          }
+        });
+        [els.dashStopHrBtn, els.inspectorStopHrBtn].forEach(function (btn) {
+          if (btn) {
+            btn.addEventListener('click', function () {
+              sendHeartRateSensorCommand('stop');
+            });
+          }
+        });
         els.inspectorConnectBtn.addEventListener('click', connectWatch);
         els.inspectorDemoBtn.addEventListener('click', function () {
           toggleDemoMode(true);
@@ -3225,7 +3864,7 @@
           }
         });
 
-        // Watch Inspector Search, Toggle All, Accordion, Characteristic Read & Live Notify
+        // Watch Inspector Search, Toggle All, Accordion, Read, Write Hex & Live Notify
         els.gattSearchInput.addEventListener('input', function (e) {
           state.searchQuery = e.target.value;
           renderInspectorServicesList();
@@ -3239,6 +3878,29 @@
             state.expandedServices[svc.uuid] = next;
           });
           renderInspectorServicesList();
+        });
+
+        els.gattServicesContainer.addEventListener('input', function (e) {
+          const input = e.target.closest('[data-write-input]');
+          if (!input) return;
+          const svcUuid = input.getAttribute('data-service-uuid');
+          const charUuid = input.getAttribute('data-write-char-uuid');
+          const svc = state.services.find((s) => s.uuid === svcUuid);
+          const ch = svc && svc.characteristics.find((c) => c.uuid === charUuid);
+          if (ch) {
+            ch.writeInput = input.value;
+            ch.writeError = null;
+          }
+        });
+
+        els.gattServicesContainer.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          const input = e.target.closest('[data-write-input]');
+          if (!input) return;
+          e.preventDefault();
+          const svcUuid = input.getAttribute('data-service-uuid');
+          const charUuid = input.getAttribute('data-write-char-uuid');
+          writeCharacteristicHex(svcUuid, charUuid, input.value).catch(() => {});
         });
 
         els.gattServicesContainer.addEventListener('click', function (e) {
@@ -3270,6 +3932,16 @@
             const svcUuid = btn.getAttribute('data-service-uuid');
             const charUuid = btn.getAttribute('data-char-uuid');
             toggleCharacteristicNotify(svcUuid, charUuid);
+          } else if (action === 'write-hex') {
+            const svcUuid = btn.getAttribute('data-service-uuid');
+            const charUuid = btn.getAttribute('data-char-uuid');
+            const svc = state.services.find((s) => s.uuid === svcUuid);
+            const ch = svc && svc.characteristics.find((c) => c.uuid === charUuid);
+            const inputEl = els.gattServicesContainer.querySelector(
+              'input[data-write-char-uuid="' + charUuid + '"]'
+            );
+            const rawHex = inputEl ? inputEl.value : ch ? ch.writeInput : '';
+            writeCharacteristicHex(svcUuid, charUuid, rawHex).catch(() => {});
           } else if (action === 'clear-search') {
             state.searchQuery = '';
             els.gattSearchInput.value = '';
